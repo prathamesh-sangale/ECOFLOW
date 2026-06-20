@@ -1,7 +1,10 @@
-import { useState } from 'react';
+
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../store/AuthContext';
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   return (
     <main className="flex w-full min-h-screen overflow-hidden bg-background text-on-background">
@@ -47,60 +50,93 @@ const Login = () => {
             <p className="font-body-md text-body-md text-on-surface-variant">Access your engineering dashboard and ECO management tools.</p>
           </div>
 
-          {/* Login Form */}
-          <form className="space-y-lg" onSubmit={(e) => e.preventDefault()}>
-            {/* Email Field */}
-            <div className="space-y-sm">
-              <label className="font-label-lg text-label-lg text-on-surface-variant block" htmlFor="email">Email Address</label>
-              <div className="relative group">
-                <span className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">mail</span>
-                <input 
-                  className="w-full h-12 pl-[48px] pr-md bg-surface-container-low border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary input-focus-ring transition-all placeholder:text-outline/50" 
-                  id="email" 
-                  placeholder="name@company.com" 
-                  type="email"
-                />
-              </div>
+          {/* Mock User Switcher */}
+          <div className="space-y-md">
+            <div className="p-4 bg-primary-container/20 rounded-xl border border-primary/20 mb-6">
+              <p className="font-body-sm text-on-surface-variant flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary text-[18px]">info</span>
+                Development Mode: Select a role to log in automatically without a backend.
+              </p>
             </div>
 
-            {/* Password Field */}
-            <div className="space-y-sm">
-              <div className="flex justify-between items-center">
-                <label className="font-label-lg text-label-lg text-on-surface-variant block" htmlFor="password">Password</label>
-                <a className="font-label-md text-label-md text-primary hover:underline transition-all" href="#">Forgot Password?</a>
-              </div>
-              <div className="relative group">
-                <span className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors">lock</span>
-                <input 
-                  className="w-full h-12 pl-[48px] pr-[48px] bg-surface-container-low border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:border-primary input-focus-ring transition-all placeholder:text-outline/50" 
-                  id="password" 
-                  placeholder="••••••••" 
-                  type={showPassword ? 'text' : 'password'}
-                />
-                <button 
-                  className="absolute right-md top-1/2 -translate-y-1/2 text-outline hover:text-on-surface transition-colors cursor-pointer" 
-                  onClick={() => setShowPassword(!showPassword)} 
-                  type="button"
-                >
-                  <span className="material-symbols-outlined" id="passwordIcon">
-                    {showPassword ? 'visibility_off' : 'visibility'}
-                  </span>
-                </button>
-              </div>
-            </div>
+            <div className="grid grid-cols-1 gap-sm">
+              <button 
+                onClick={() => {
+                  login('mock-token-admin', { id: '1', email: 'admin@ecoflow.com', first_name: 'System', last_name: 'Admin', role: { role_name: 'Admin' } } as any);
+                  navigate('/dashboard');
+                }}
+                className="w-full h-14 bg-surface-container border border-outline-variant hover:border-primary hover:bg-primary/5 rounded-xl flex items-center justify-between px-md transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                    <span className="material-symbols-outlined">admin_panel_settings</span>
+                  </div>
+                  <div className="text-left">
+                    <p className="font-label-lg text-on-surface">Admin</p>
+                    <p className="font-body-sm text-on-surface-variant">System Configuration & Audit</p>
+                  </div>
+                </div>
+                <span className="material-symbols-outlined text-outline group-hover:text-primary group-hover:translate-x-1 transition-all">arrow_forward</span>
+              </button>
 
-            {/* Remember Me */}
-            <div className="flex items-center gap-sm">
-              <input className="w-5 h-5 rounded border-outline-variant text-primary focus:ring-primary/20 cursor-pointer" id="remember" type="checkbox" />
-              <label className="font-body-md text-body-md text-on-surface-variant cursor-pointer" htmlFor="remember">Keep me logged in for 30 days</label>
-            </div>
+              <button 
+                onClick={() => {
+                  login('mock-token-engineer', { id: '2', email: 'engineer@ecoflow.com', first_name: 'Lead', last_name: 'Engineer', role: { role_name: 'Engineer' } } as any);
+                  navigate('/dashboard');
+                }}
+                className="w-full h-14 bg-surface-container border border-outline-variant hover:border-secondary hover:bg-secondary/5 rounded-xl flex items-center justify-between px-md transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-secondary/10 flex items-center justify-center text-secondary group-hover:bg-secondary group-hover:text-on-secondary transition-colors">
+                    <span className="material-symbols-outlined">engineering</span>
+                  </div>
+                  <div className="text-left">
+                    <p className="font-label-lg text-on-surface">Engineer</p>
+                    <p className="font-body-sm text-on-surface-variant">ECO Creation & BOMs</p>
+                  </div>
+                </div>
+                <span className="material-symbols-outlined text-outline group-hover:text-secondary group-hover:translate-x-1 transition-all">arrow_forward</span>
+              </button>
 
-            {/* CTA Button */}
-            <button className="w-full h-12 bg-primary text-on-primary rounded-lg font-label-lg text-label-lg font-bold shadow-sm hover:bg-primary-container hover:shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-sm group">
-              <span>Secure Login</span>
-              <span className="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">login</span>
-            </button>
-          </form>
+              <button 
+                onClick={() => {
+                  login('mock-token-approver', { id: '3', email: 'approver@ecoflow.com', first_name: 'QA', last_name: 'Approver', role: { role_name: 'Approver' } } as any);
+                  navigate('/dashboard');
+                }}
+                className="w-full h-14 bg-surface-container border border-outline-variant hover:border-tertiary hover:bg-tertiary/5 rounded-xl flex items-center justify-between px-md transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-tertiary/10 flex items-center justify-center text-tertiary group-hover:bg-tertiary group-hover:text-on-tertiary transition-colors">
+                    <span className="material-symbols-outlined">fact_check</span>
+                  </div>
+                  <div className="text-left">
+                    <p className="font-label-lg text-on-surface">Approver</p>
+                    <p className="font-body-sm text-on-surface-variant">Review & Approval Queue</p>
+                  </div>
+                </div>
+                <span className="material-symbols-outlined text-outline group-hover:text-tertiary group-hover:translate-x-1 transition-all">arrow_forward</span>
+              </button>
+
+              <button 
+                onClick={() => {
+                  login('mock-token-production', { id: '4', email: 'production@ecoflow.com', first_name: 'Floor', last_name: 'Manager', role: { role_name: 'Production' } } as any);
+                  navigate('/dashboard');
+                }}
+                className="w-full h-14 bg-surface-container border border-outline-variant hover:border-emerald-600 hover:bg-emerald-50 rounded-xl flex items-center justify-between px-md transition-all group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                    <span className="material-symbols-outlined">precision_manufacturing</span>
+                  </div>
+                  <div className="text-left">
+                    <p className="font-label-lg text-on-surface">Production</p>
+                    <p className="font-body-sm text-on-surface-variant">Manufacturing Releases</p>
+                  </div>
+                </div>
+                <span className="material-symbols-outlined text-outline group-hover:text-emerald-600 group-hover:translate-x-1 transition-all">arrow_forward</span>
+              </button>
+            </div>
+          </div>
 
           {/* Support Footer */}
           <div className="mt-xl pt-lg border-t border-outline-variant/30 flex flex-col items-center gap-md">

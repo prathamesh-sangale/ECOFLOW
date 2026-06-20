@@ -96,4 +96,32 @@ export class AuthController {
     res.clearCookie('refresh_token');
     res.json({ success: true });
   }
+  static async changePassword(req: AuthRequest, res: Response) {
+    if (!req.user) return res.status(401).json({ error: 'Unauthorized' });
+    try {
+      const { oldPassword, newPassword } = req.body;
+      const bcrypt = require('bcryptjs');
+      const user = await prisma.user.findUnique({ where: { id: req.user.id } });
+      if (!user) return res.status(404).json({ error: 'User not found' });
+      
+      const isValid = await bcrypt.compare(oldPassword, user.password_hash);
+      if (!isValid) return res.status(400).json({ error: 'Invalid old password' });
+      
+      const newHash = await bcrypt.hash(newPassword, 10);
+      await prisma.user.update({ where: { id: user.id }, data: { password_hash: newHash } });
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to change password' });
+    }
+  }
+
+  static async forgotPassword(req: Request, res: Response) {
+    // In a real app this would send an email. For now, just return success.
+    res.json({ success: true, message: 'If email exists, a reset link has been sent.' });
+  }
+
+  static async resetPassword(req: Request, res: Response) {
+    // Simulated token reset
+    res.json({ success: true, message: 'Password has been reset.' });
+  }
 }

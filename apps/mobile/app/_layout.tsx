@@ -6,6 +6,9 @@ import 'react-native-reanimated';
 import { AuthProvider, useAuth } from '../src/store/AuthContext';
 
 import { useColorScheme } from '@/components/useColorScheme';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { queryClient, asyncStoragePersister } from '../src/services/queryClient';
+import { OfflineIndicator } from '../src/components/OfflineIndicator';
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -55,9 +58,11 @@ export default function RootLayout() {
   if (!loaded) return null;
 
   return (
-    <AuthProvider>
-      <RootLayoutNav />
-    </AuthProvider>
+    <PersistQueryClientProvider client={queryClient} persistOptions={{ persister: asyncStoragePersister }}>
+      <AuthProvider>
+        <RootLayoutNav />
+      </AuthProvider>
+    </PersistQueryClientProvider>
   );
 }
 
@@ -67,6 +72,7 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <OfflineIndicator />
       <Stack>
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="pending" options={{ headerShown: false }} />

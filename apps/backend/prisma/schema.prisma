@@ -8,25 +8,55 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(uuid())
+  id            String    @id @default(uuid())
   full_name     String
-  email         String   @unique
+  email         String    @unique
   password_hash String
+  phone         String?
+  profile_image String?
   role_id       String?
-  status        String   @default("PENDING") // PENDING, ACTIVE, INACTIVE
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
+  status        String    @default("PENDING") // PENDING, ACTIVE, INACTIVE, SUSPENDED
+  last_login    DateTime?
+  created_at    DateTime  @default(now())
+  updated_at    DateTime  @updatedAt
 
   role     Role?     @relation(fields: [role_id], references: [id])
   sessions Session[]
+
+  created_products     Product[]           @relation("ProductCreator")
+  uploaded_attachments ProductAttachment[] @relation("AttachmentUploader")
+  product_activities   ProductActivity[]   @relation("ProductActivityUser")
+
+  created_boms   BOM[]         @relation("BomCreator")
+  bom_activities BOMActivity[] @relation("BomActivityUser")
+
+  submitted_ecos  ECO[]           @relation("EcoSubmitter")
+  reviewed_ecos   ECO[]           @relation("EcoReviewer")
+  eco_comments    ECOComment[]    @relation("EcoCommentUser")
+  eco_attachments ECOAttachment[] @relation("EcoAttachmentUploader")
+  eco_activities  ECOActivity[]   @relation("EcoActivityUser")
+
+  approvals           Approval[]         @relation("ApprovalReviewer")
+  approval_activities ApprovalActivity[] @relation("ApprovalActivityUser")
+  approval_comments   ApprovalComment[]  @relation("ApprovalCommentUser")
+
+  product_versions   ProductVersion[]  @relation("ProductVersionCreator")
+  bom_versions       BOMVersion[]      @relation("BOMVersionCreator")
+  version_releases   VersionRelease[]  @relation("VersionReleaseCreator")
+  version_activities VersionActivity[] @relation("VersionActivityUser")
+
+  audit_logs   AuditLog[]   @relation("AuditLogUser")
+  login_audits LoginAudit[] @relation("LoginAuditUser")
+  notifications Notification[] @relation("NotificationUser")
 
   @@map("users")
 }
 
 model Role {
-  id          String  @id @default(uuid())
-  role_name   String  @unique
+  id          String   @id @default(uuid())
+  role_name   String   @unique
   description String?
+  created_at  DateTime @default(now())
 
   users            User[]
   role_permissions RolePermission[]
@@ -35,8 +65,10 @@ model Role {
 }
 
 model Permission {
-  id              String @id @default(uuid())
-  permission_name String @unique
+  id              String  @id @default(uuid())
+  permission_name String  @unique
+  module_name     String
+  description     String?
 
   role_permissions RolePermission[]
 
@@ -79,4 +111,369 @@ model AccessRequest {
   created_at     DateTime @default(now())
 
   @@map("access_requests")
+}
+
+model ProductCategory {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?
+  created_at  DateTime @default(now())
+
+  products Product[]
+
+  @@map("product_categories")
+}
+
+model Product {
+  id           String   @id @default(uuid())
+  product_code String   @unique
+  product_name String
+  category_id  String
+  description  String?
+  image_url    String?
+  status       String   @default("Draft") // Draft, Active, Archived
+  created_by   String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  category    ProductCategory     @relation(fields: [category_id], references: [id])
+  creator     User                @relation("ProductCreator", fields: [created_by], references: [id])
+  attachments ProductAttachment[]
+  activities  ProductActivity[]
+  boms        BOM[]
+  ecos        ECO[]
+  versions    ProductVersion[]
+
+  @@map("products")
+}
+
+model ProductAttachment {
+  id          String   @id @default(uuid())
+  product_id  String
+  file_name   String
+  file_url    String
+  file_type   String
+  uploaded_by String
+  uploaded_at DateTime @default(now())
+
+  product  Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  uploader User    @relation("AttachmentUploader", fields: [uploaded_by], references: [id])
+
+  @@map("product_attachments")
+}
+
+model ProductActivity {
+  id         String   @id @default(uuid())
+  product_id String
+  action     String
+  details    String?
+  user_id    String
+  created_at DateTime @default(now())
+
+  product Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  user    User    @relation("ProductActivityUser", fields: [user_id], references: [id])
+
+  @@map("product_activities")
+}
+
+model BOM {
+  id          String   @id @default(uuid())
+  product_id  String
+  bom_code    String   @unique
+  bom_name    String
+  description String?
+  status      String   @default("Draft") // Draft, Active, Archived
+  created_by  String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  product    Product        @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  creator    User           @relation("BomCreator", fields: [created_by], references: [id])
+  components BOMComponent[]
+  activities BOMActivity[]
+  ecos       ECO[]
+  versions   BOMVersion[]
+
+  @@map("boms")
+}
+
+model BOMComponent {
+  id             String   @id @default(uuid())
+  bom_id         String
+  component_name String
+  material_type  String
+  quantity       Float
+  unit           String
+  unit_cost      Float
+  total_cost     Float
+  notes          String?
+  created_at     DateTime @default(now())
+
+  bom BOM @relation(fields: [bom_id], references: [id], onDelete: Cascade)
+
+  @@map("bom_components")
+}
+
+model BOMActivity {
+  id         String   @id @default(uuid())
+  bom_id     String
+  action     String
+  metadata   String?
+  user_id    String
+  created_at DateTime @default(now())
+
+  bom  BOM  @relation(fields: [bom_id], references: [id], onDelete: Cascade)
+  user User @relation("BomActivityUser", fields: [user_id], references: [id])
+
+  @@map("bom_activities")
+}
+
+model ECO {
+  id           String   @id @default(uuid())
+  eco_number   String   @unique
+  product_id   String
+  bom_id       String
+  title        String
+  description  String?
+  reason       String?
+  priority     String   @default("Low") // Low, Medium, High, Critical
+  status       String   @default("Draft") // Draft, Submitted, Under Review, Changes Requested, Approved, Rejected, Cancelled
+  submitted_by String
+  reviewed_by  String?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  product   Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  bom       BOM     @relation(fields: [bom_id], references: [id], onDelete: Cascade)
+  submitter User    @relation("EcoSubmitter", fields: [submitted_by], references: [id])
+  reviewer  User?   @relation("EcoReviewer", fields: [reviewed_by], references: [id])
+
+  changes          ECOChange[]
+  comments         ECOComment[]
+  attachments      ECOAttachment[]
+  activities       ECOActivity[]
+  approvals        Approval[]
+  product_versions ProductVersion[]
+  bom_versions     BOMVersion[]
+
+  @@map("ecos")
+}
+
+model ECOChange {
+  id          String   @id @default(uuid())
+  eco_id      String
+  change_type String // Quantity Change, Material Change, Cost Change, Component Change
+  field_name  String
+  old_value   String?
+  new_value   String?
+  impact_type String // Cost, Material, Manufacturing, Quality
+  created_at  DateTime @default(now())
+
+  eco ECO @relation(fields: [eco_id], references: [id], onDelete: Cascade)
+
+  @@map("eco_changes")
+}
+
+model ECOComment {
+  id         String   @id @default(uuid())
+  eco_id     String
+  user_id    String
+  comment    String
+  created_at DateTime @default(now())
+
+  eco  ECO  @relation(fields: [eco_id], references: [id], onDelete: Cascade)
+  user User @relation("EcoCommentUser", fields: [user_id], references: [id])
+
+  @@map("eco_comments")
+}
+
+model ECOAttachment {
+  id          String   @id @default(uuid())
+  eco_id      String
+  file_name   String
+  file_url    String
+  file_type   String
+  uploaded_by String
+  uploaded_at DateTime @default(now())
+
+  eco      ECO  @relation(fields: [eco_id], references: [id], onDelete: Cascade)
+  uploader User @relation("EcoAttachmentUploader", fields: [uploaded_by], references: [id])
+
+  @@map("eco_attachments")
+}
+
+model ECOActivity {
+  id         String   @id @default(uuid())
+  eco_id     String
+  action     String
+  metadata   String?
+  user_id    String
+  created_at DateTime @default(now())
+
+  eco  ECO  @relation(fields: [eco_id], references: [id], onDelete: Cascade)
+  user User @relation("EcoActivityUser", fields: [user_id], references: [id])
+
+  @@map("eco_activities")
+}
+
+model Approval {
+  id           String    @id @default(uuid())
+  eco_id       String
+  reviewer_id  String
+  decision     String? // Approved, Rejected, Changes Requested
+  review_notes String?
+  reviewed_at  DateTime?
+  created_at   DateTime  @default(now())
+
+  eco      ECO  @relation(fields: [eco_id], references: [id], onDelete: Cascade)
+  reviewer User @relation("ApprovalReviewer", fields: [reviewer_id], references: [id])
+
+  activities ApprovalActivity[]
+  comments   ApprovalComment[]
+
+  @@map("approvals")
+}
+
+model ApprovalActivity {
+  id           String   @id @default(uuid())
+  approval_id  String
+  action       String
+  metadata     String?
+  performed_by String
+  created_at   DateTime @default(now())
+
+  approval Approval @relation(fields: [approval_id], references: [id], onDelete: Cascade)
+  user     User     @relation("ApprovalActivityUser", fields: [performed_by], references: [id])
+
+  @@map("approval_activities")
+}
+
+model ApprovalComment {
+  id          String   @id @default(uuid())
+  approval_id String
+  user_id     String
+  comment     String
+  created_at  DateTime @default(now())
+
+  approval Approval @relation(fields: [approval_id], references: [id], onDelete: Cascade)
+  user     User     @relation("ApprovalCommentUser", fields: [user_id], references: [id])
+
+  @@map("approval_comments")
+}
+
+model ProductVersion {
+  id             String   @id @default(uuid())
+  product_id     String
+  version_number String
+  eco_id         String
+  release_notes  String?
+  snapshot       Json
+  created_by     String
+  is_active      Boolean  @default(false)
+  created_at     DateTime @default(now())
+
+  product Product @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  eco     ECO     @relation(fields: [eco_id], references: [id], onDelete: Cascade)
+  creator User    @relation("ProductVersionCreator", fields: [created_by], references: [id])
+
+  releases   VersionRelease[]
+  activities VersionActivity[]
+
+  @@map("product_versions")
+}
+
+model BOMVersion {
+  id             String   @id @default(uuid())
+  bom_id         String
+  version_number String
+  eco_id         String
+  release_notes  String?
+  snapshot       Json
+  created_by     String
+  is_active      Boolean  @default(false)
+  created_at     DateTime @default(now())
+
+  bom     BOM  @relation(fields: [bom_id], references: [id], onDelete: Cascade)
+  eco     ECO  @relation(fields: [eco_id], references: [id], onDelete: Cascade)
+  creator User @relation("BOMVersionCreator", fields: [created_by], references: [id])
+
+  releases VersionRelease[]
+
+  @@map("bom_versions")
+}
+
+model VersionRelease {
+  id                 String   @id @default(uuid())
+  product_version_id String
+  bom_version_id     String
+  release_date       DateTime @default(now())
+  released_by        String
+  notes              String?
+
+  product_version ProductVersion @relation(fields: [product_version_id], references: [id], onDelete: Cascade)
+  bom_version     BOMVersion     @relation(fields: [bom_version_id], references: [id], onDelete: Cascade)
+  releaser        User           @relation("VersionReleaseCreator", fields: [released_by], references: [id])
+
+  @@map("version_releases")
+}
+
+model VersionActivity {
+  id                 String   @id @default(uuid())
+  product_version_id String
+  action             String
+  metadata           String?
+  user_id            String
+  created_at         DateTime @default(now())
+
+  product_version ProductVersion @relation(fields: [product_version_id], references: [id], onDelete: Cascade)
+  user            User           @relation("VersionActivityUser", fields: [user_id], references: [id])
+
+  @@map("version_activities")
+}
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  entity_type  String
+  entity_id    String
+  action       String
+  old_value    Json?
+  new_value    Json?
+  performed_by String
+  ip_address   String?
+  user_agent   String?
+  performed_at DateTime @default(now())
+
+  user User @relation("AuditLogUser", fields: [performed_by], references: [id])
+
+  @@map("audit_logs")
+}
+
+model LoginAudit {
+  id         String   @id @default(uuid())
+  user_id    String
+  action     String
+  ip_address String?
+  device     String?
+  created_at DateTime @default(now())
+
+  user User @relation("LoginAuditUser", fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("login_audits")
+}
+
+model Notification {
+  id         String   @id @default(uuid())
+  user_id    String
+  title      String
+  message    String
+  type       String   // success, warning, info
+  read       Boolean  @default(false)
+  link       String?
+  created_at DateTime @default(now())
+
+  user       User     @relation("NotificationUser", fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@index([user_id])
+  @@index([created_at])
+  @@map("notifications")
 }

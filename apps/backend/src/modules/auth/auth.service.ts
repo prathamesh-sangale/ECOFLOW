@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { LoginInput } from '@ecoflow/shared-validations';
+import { auditService } from '../audit/audit.service';
 
 const prisma = new PrismaClient();
 
@@ -39,6 +40,13 @@ export class AuthService {
         device_name: deviceName,
         expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days
       }
+    });
+
+    await auditService.logLogin({
+      user_id: user.id,
+      action: 'LOGIN',
+      ip_address: ipAddress,
+      device: deviceName
     });
 
     return {
@@ -82,12 +90,25 @@ export class AuthService {
   }
 
   static async logout(refreshToken: string) {
-    await prisma.session.deleteMany({
-      where: { refresh_token: refreshToken }
-    });
+    const session = await prisma.session.findUnique({ where: { refresh_token: refreshToken } });
+    if (session) {
+      await auditService.logLogin({
+        user_id: session.user_id,
+        action: 'LOGOUT',
+        ip_address: session.ip_address || '',
+        device: session.device_name || ''
+      });
+      await prisma.session.delete({
+        where: { refresh_token: refreshToken }
+      });
+    }
   }
 
   static async logoutAll(userId: string) {
+    await auditService.logLogin({
+      user_id: userId,
+      action: 'LOGOUT_ALL'
+    });
     await prisma.session.deleteMany({
       where: { user_id: userId }
     });

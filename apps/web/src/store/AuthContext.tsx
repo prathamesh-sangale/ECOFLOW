@@ -27,6 +27,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const initAuth = async () => {
       const token = localStorage.getItem('accessToken');
+      const storedUser = localStorage.getItem('mockUser');
+
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+        setIsLoading(false);
+        return;
+      }
+
       if (token) {
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
         try {
@@ -72,6 +80,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (token: string, userData: User) => {
     localStorage.setItem('accessToken', token);
+    localStorage.setItem('mockUser', JSON.stringify(userData));
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     setUser(userData);
   };
@@ -83,6 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // ignore
     }
     localStorage.removeItem('accessToken');
+    localStorage.removeItem('mockUser');
     delete api.defaults.headers.common['Authorization'];
     setUser(null);
     navigate('/');
