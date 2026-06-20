@@ -14,8 +14,12 @@ export default function EngineerDashboard() {
 
   const fetchDashboard = async () => {
     try {
-      const res = await api.get('/dashboard/engineer');
-      setData(res.data);
+      if (localStorage.getItem('mockUser')) {
+        setData({ totalProducts: 42, totalBoms: 156, draftEcos: 3, pendingReviews: 12, approvedEcos: 89, rejectedEcos: 4, recentProducts: [], recentActivities: [] });
+      } else {
+        const res = await api.get('/dashboard/engineer');
+        setData(res.data);
+      }
     } catch (error) {
       console.error('Failed to fetch engineer dashboard', error);
     } finally {

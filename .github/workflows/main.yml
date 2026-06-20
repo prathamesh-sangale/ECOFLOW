@@ -1,0 +1,38 @@
+name: ECOFlow CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Build Shared Types & Validations
+      run: npm run build -w packages/shared-types && npm run build -w packages/shared-validations
+
+    - name: Test Backend
+      run: npm run test -w apps/backend
+
+    - name: Build Web App
+      run: npm run build -w apps/web
+
+    - name: Build Backend
+      run: npm run build -w apps/backend
