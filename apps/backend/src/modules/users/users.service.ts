@@ -117,6 +117,13 @@ export class UsersService {
     const oldUser = await prisma.user.findUnique({ where: { id } });
     if (!oldUser) throw new Error('User not found');
 
+    // Manually clean up relations that might not have onDelete: Cascade or where this user is the performer.
+    // Ensure we don't delete products or ECOs - if those exist, deletion should fail to protect business logic.
+    await prisma.auditLog.deleteMany({ where: { performed_by: id } });
+    await prisma.loginAudit.deleteMany({ where: { user_id: id } });
+    await prisma.notification.deleteMany({ where: { user_id: id } });
+    await prisma.session.deleteMany({ where: { user_id: id } });
+
     await prisma.user.delete({
       where: { id }
     });

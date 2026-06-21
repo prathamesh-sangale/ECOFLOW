@@ -148,6 +148,10 @@ export class ProductsService {
       throw new Error('Cannot delete an active product. Archive it instead.');
     }
 
+    // Clean up relations that prevent deletion of simple products
+    await prisma.productActivity.deleteMany({ where: { product_id: id } });
+    await prisma.productAttachment.deleteMany({ where: { product_id: id } });
+
     await prisma.product.delete({
       where: { id }
     });

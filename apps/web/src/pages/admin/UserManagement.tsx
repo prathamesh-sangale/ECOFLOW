@@ -9,6 +9,11 @@ export default function UserManagement() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
 
+  // Filters
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [roleFilter, setRoleFilter] = useState('');
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -38,11 +43,19 @@ export default function UserManagement() {
       try {
         await api.delete(`/users/${id}`);
         fetchUsers();
-      } catch (e) {
+      } catch (e: any) {
+        alert(e.response?.data?.error || 'Failed to delete user. They may have associated records that prevent deletion.');
         console.error(e);
       }
     }
   };
+
+  const filteredUsers = users.filter(u => {
+    const matchesSearch = u.full_name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = statusFilter ? u.status === statusFilter : true;
+    const matchesRole = roleFilter ? u.role?.role_name === roleFilter : true;
+    return matchesSearch && matchesStatus && matchesRole;
+  });
 
   return (
     <div className="flex flex-col h-full">
@@ -54,7 +67,38 @@ export default function UserManagement() {
         <div className="p-lg md:p-xl space-y-xl max-w-[1600px] mx-auto w-full">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-lg">
             <div className="flex flex-wrap items-center gap-md">
-              {/* Filters */}
+              <div className="relative">
+                <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+                <input 
+                  type="text" 
+                  placeholder="Search users..." 
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  className="pl-10 pr-4 py-2 border border-outline-variant rounded-lg font-body-md text-on-surface bg-surface focus:ring-2 focus:ring-primary/20 outline-none w-[250px]"
+                />
+              </div>
+              <select 
+                value={statusFilter}
+                onChange={e => setStatusFilter(e.target.value)}
+                className="px-4 py-2 border border-outline-variant rounded-lg font-body-md text-on-surface bg-surface focus:ring-2 focus:ring-primary/20 outline-none"
+              >
+                <option value="">All Statuses</option>
+                <option value="ACTIVE">Active</option>
+                <option value="PENDING">Pending</option>
+                <option value="SUSPENDED">Suspended</option>
+              </select>
+              <select 
+                value={roleFilter}
+                onChange={e => setRoleFilter(e.target.value)}
+                className="px-4 py-2 border border-outline-variant rounded-lg font-body-md text-on-surface bg-surface focus:ring-2 focus:ring-primary/20 outline-none"
+              >
+                <option value="">All Roles</option>
+                <option value="Admin">Admin</option>
+                <option value="Engineer">Engineer</option>
+                <option value="Approver">Approver</option>
+                <option value="Production Manager">Production Manager</option>
+                <option value="Production">Production</option>
+              </select>
             </div>
             <div className="flex items-center gap-sm">
               <button onClick={() => setShowForm(true)} className="flex items-center gap-sm px-lg py-md bg-primary text-on-primary font-label-lg text-label-lg rounded-lg hover:opacity-90 transition-all shadow-md">
@@ -79,7 +123,9 @@ export default function UserManagement() {
                 <tbody className="divide-y divide-outline-variant">
                   {loading ? (
                     <tr><td colSpan={5} className="text-center p-md">Loading users...</td></tr>
-                  ) : users.map(u => (
+                  ) : filteredUsers.length === 0 ? (
+                    <tr><td colSpan={5} className="text-center p-md text-on-surface-variant">No users found matching filters.</td></tr>
+                  ) : filteredUsers.map(u => (
                     <tr key={u.id} className="hover:bg-surface-container-lowest transition-colors group">
                       <td className="px-lg py-md">
                         <div className="flex flex-col">

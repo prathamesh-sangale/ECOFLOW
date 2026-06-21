@@ -10,6 +10,7 @@ export default function ProductList() {
   const { logout } = useAuth();
   const [showForm, setShowForm] = useState(false);
   const [editProductId, setEditProductId] = useState<string | null>(null);
+  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
 
   const { data: catData = [] } = useQuery<ProductCategory[]>({
     queryKey: ['categories'],
@@ -24,6 +25,21 @@ export default function ProductList() {
   const products: Product[] = prodData?.products || [];
   const total = prodData?.total || 0;
   const categories = catData;
+
+  const filteredProducts = categoryFilter 
+    ? products.filter(p => p.category_id === categoryFilter)
+    : products;
+
+  const handleDelete = async (id: string) => {
+    if (confirm('Are you sure you want to delete this product?')) {
+      try {
+        await api.delete(`/products/${id}`);
+        refetch();
+      } catch (error: any) {
+        alert(error.response?.data?.error || 'Failed to delete product. It may have associated records like BOMs or ECOs.');
+      }
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -57,10 +73,10 @@ export default function ProductList() {
               <h2 className="font-headline-lg text-headline-lg text-on-surface mb-xs">Product Management</h2>
               <p className="text-secondary font-body-lg text-body-lg">Manage engineering lifecycles and versions for the current furniture catalog.</p>
             </div>
-            <div className="flex items-center gap-md bg-surface p-1 rounded-xl shadow-sm border border-outline-variant">
-              <button className="px-md py-sm bg-secondary-container text-primary font-medium rounded-lg text-label-lg font-label-lg transition-all">All Products</button>
+            <div className="flex items-center gap-md bg-surface p-1 rounded-xl shadow-sm border border-outline-variant overflow-x-auto">
+              <button onClick={() => setCategoryFilter(null)} className={`whitespace-nowrap px-md py-sm rounded-lg text-label-lg font-label-lg transition-all ${categoryFilter === null ? 'bg-secondary-container text-primary font-medium' : 'text-secondary hover:text-primary'}`}>All Products</button>
               {categories.map(cat => (
-                <button key={cat.id} className="px-md py-sm text-secondary hover:text-primary transition-all text-label-lg font-label-lg">{cat.name}</button>
+                <button onClick={() => setCategoryFilter(cat.id)} key={cat.id} className={`whitespace-nowrap px-md py-sm rounded-lg text-label-lg font-label-lg transition-all ${categoryFilter === cat.id ? 'bg-secondary-container text-primary font-medium' : 'text-secondary hover:text-primary'}`}>{cat.name}</button>
               ))}
             </div>
           </div>
@@ -92,8 +108,10 @@ export default function ProductList() {
                 <tbody className="divide-y divide-outline-variant/30">
                   {loading ? (
                     <tr><td colSpan={5} className="text-center p-md">Loading...</td></tr>
+                  ) : filteredProducts.length === 0 ? (
+                    <tr><td colSpan={5} className="text-center p-md text-secondary">No products found.</td></tr>
                   ) : (
-                    products.map(product => (
+                    filteredProducts.map(product => (
                       <tr key={product.id} className="hover:bg-surface-container transition-colors">
                         <td className="px-lg py-md">
                           <div className="flex items-center gap-md">
@@ -127,7 +145,7 @@ export default function ProductList() {
                             >
                               <span className="material-symbols-outlined text-sm">edit</span>
                             </button>
-                            <button className="p-2 text-error hover:bg-error-container rounded-lg transition-colors"><span className="material-symbols-outlined text-sm">delete</span></button>
+                            <button onClick={() => handleDelete(product.id)} className="p-2 text-error hover:bg-error-container rounded-lg transition-colors"><span className="material-symbols-outlined text-sm">delete</span></button>
                           </div>
                         </td>
                       </tr>

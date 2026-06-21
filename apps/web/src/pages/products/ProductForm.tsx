@@ -25,6 +25,8 @@ export default function ProductForm({ productId, onClose, onSuccess }: ProductFo
     status: 'Draft'
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   useEffect(() => {
     api.get('/categories').then(res => setCategories(res.data));
     if (id) {
@@ -43,6 +45,8 @@ export default function ProductForm({ productId, onClose, onSuccess }: ProductFo
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
       if (id) {
         await api.put(`/products/${id}`, formData);
@@ -56,9 +60,11 @@ export default function ProductForm({ productId, onClose, onSuccess }: ProductFo
       } else {
         navigate('/products');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert('Failed to save product');
+      alert(error.response?.data?.error || 'Failed to save product');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -92,8 +98,10 @@ export default function ProductForm({ productId, onClose, onSuccess }: ProductFo
             </select>
           </div>
           <div className="flex justify-end gap-md mt-lg">
-            <button type="button" onClick={() => onClose ? onClose() : navigate(-1)} className="px-4 py-2 text-secondary hover:bg-surface-container rounded">Cancel</button>
-            <button type="submit" className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-container">Save Product</button>
+            <button type="button" onClick={() => onClose ? onClose() : navigate(-1)} className="px-4 py-2 text-secondary hover:bg-surface-container rounded" disabled={isSubmitting}>Cancel</button>
+            <button type="submit" disabled={isSubmitting} className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-container disabled:opacity-50">
+              {isSubmitting ? 'Saving...' : 'Save Product'}
+            </button>
           </div>
         </form>
       </div>
