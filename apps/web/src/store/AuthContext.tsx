@@ -8,7 +8,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (token: string, userData: User) => void;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -30,6 +30,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const storedUser = localStorage.getItem('mockUser');
 
       if (storedUser) {
+        if (token) {
+          api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
         setUser(JSON.parse(storedUser));
         setIsLoading(false);
         return;
@@ -78,11 +81,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return () => api.interceptors.response.eject(interceptor);
   }, []);
 
-  const login = (token: string, userData: User) => {
-    localStorage.setItem('accessToken', token);
-    localStorage.setItem('mockUser', JSON.stringify(userData));
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    setUser(userData);
+  const login = async (email: string, password: string) => {
+    try {
+      const res = await api.post('/auth/login', { email, password });
+      const { accessToken, user: userData } = res.data;
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('mockUser', JSON.stringify(userData)); // Keeping key for backward compatibility for now
+      api.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+      setUser(userData);
+    } catch (error) {
+      console.error('Login failed:', error);
+      throw error;
+    }
   };
 
   const logout = async () => {

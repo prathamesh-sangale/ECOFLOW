@@ -61,9 +61,13 @@ const Login = () => {
 
             <div className="grid grid-cols-1 gap-sm">
               <button 
-                onClick={() => {
-                  login('mock-token-admin', { id: '1', email: 'admin@ecoflow.com', first_name: 'System', last_name: 'Admin', role: { role_name: 'Admin' } } as any);
-                  navigate('/dashboard');
+                onClick={async () => {
+                  try {
+                    await login('admin@ecoflow.com', 'Password123!');
+                    navigate('/dashboard');
+                  } catch (e) {
+                    alert('Login failed. Ensure backend is running and seeded.');
+                  }
                 }}
                 className="w-full h-14 bg-surface-container border border-outline-variant hover:border-primary hover:bg-primary/5 rounded-xl flex items-center justify-between px-md transition-all group"
               >
@@ -80,9 +84,13 @@ const Login = () => {
               </button>
 
               <button 
-                onClick={() => {
-                  login('mock-token-engineer', { id: '2', email: 'engineer@ecoflow.com', first_name: 'Lead', last_name: 'Engineer', role: { role_name: 'Engineer' } } as any);
-                  navigate('/dashboard');
+                onClick={async () => {
+                  try {
+                    await login('engineer@ecoflow.com', 'Password123!');
+                    navigate('/dashboard');
+                  } catch (e) {
+                    alert('Login failed. Ensure backend is running and seeded.');
+                  }
                 }}
                 className="w-full h-14 bg-surface-container border border-outline-variant hover:border-secondary hover:bg-secondary/5 rounded-xl flex items-center justify-between px-md transition-all group"
               >
@@ -99,9 +107,13 @@ const Login = () => {
               </button>
 
               <button 
-                onClick={() => {
-                  login('mock-token-approver', { id: '3', email: 'approver@ecoflow.com', first_name: 'QA', last_name: 'Approver', role: { role_name: 'Approver' } } as any);
-                  navigate('/dashboard');
+                onClick={async () => {
+                  try {
+                    await login('approver@ecoflow.com', 'Password123!');
+                    navigate('/dashboard');
+                  } catch (e) {
+                    alert('Login failed. Ensure backend is running and seeded.');
+                  }
                 }}
                 className="w-full h-14 bg-surface-container border border-outline-variant hover:border-tertiary hover:bg-tertiary/5 rounded-xl flex items-center justify-between px-md transition-all group"
               >
@@ -118,9 +130,13 @@ const Login = () => {
               </button>
 
               <button 
-                onClick={() => {
-                  login('mock-token-production', { id: '4', email: 'production@ecoflow.com', first_name: 'Floor', last_name: 'Manager', role: { role_name: 'Production' } } as any);
-                  navigate('/dashboard');
+                onClick={async () => {
+                  try {
+                    await login('production@ecoflow.com', 'Password123!');
+                    navigate('/dashboard');
+                  } catch (e) {
+                    alert('Login failed. Ensure backend is running and seeded.');
+                  }
                 }}
                 className="w-full h-14 bg-surface-container border border-outline-variant hover:border-emerald-600 hover:bg-emerald-50 rounded-xl flex items-center justify-between px-md transition-all group"
               >
