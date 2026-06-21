@@ -115,7 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await SecureStore.setItemAsync('refreshToken', refresh);
     api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     setUser(userData);
-    router.replace('/(tabs)');
+    router.replace('/(tabs)/dashboard');
   };
 
   const logout = async () => {

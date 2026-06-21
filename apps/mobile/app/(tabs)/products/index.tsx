@@ -44,7 +44,9 @@ export default function ProductsScreen() {
       activeOpacity={0.7}
     >
       <View style={styles.cardHeader}>
-        <SymbolView name="cube.box.fill" size={24} tintColor="#3B82F6" />
+        <View style={styles.iconBg}>
+          <SymbolView name="cube.box.fill" size={20} tintColor="#005c55" />
+        </View>
         <View style={styles.cardTitleContainer}>
           <Text style={styles.cardTitle}>{item.product_name}</Text>
           <Text style={styles.cardSubtitle}>{item.product_code}</Text>
@@ -64,18 +66,18 @@ export default function ProductsScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <SymbolView name="magnifyingglass" size={20} tintColor="#94A3B8" />
+        <SymbolView name="magnifyingglass" size={18} tintColor="#8e9a97" />
         <TextInput
           style={styles.searchInput}
           placeholder="Search products..."
           value={search}
           onChangeText={setSearch}
-          placeholderTextColor="#94A3B8"
+          placeholderTextColor="#8e9a97"
         />
       </View>
 
       {status === 'pending' ? (
-        <View style={styles.centered}><ActivityIndicator size="large" color="#4F46E5" /></View>
+        <View style={styles.centered}><ActivityIndicator size="large" color="#005c55" /></View>
       ) : status === 'error' ? (
         <View style={styles.centered}><Text style={styles.errorText}>Error fetching products: {(error as any).message}</Text></View>
       ) : (
@@ -85,7 +87,7 @@ export default function ProductsScreen() {
           renderItem={renderItem}
           contentContainerStyle={styles.listContent}
           refreshControl={
-            <RefreshControl refreshing={isFetching && !isFetchingNextPage} onRefresh={refetch} tintColor="#4F46E5" />
+            <RefreshControl refreshing={isFetching && !isFetchingNextPage} onRefresh={refetch} tintColor="#005c55" />
           }
           onEndReached={() => {
             if (hasNextPage) fetchNextPage();
@@ -93,12 +95,12 @@ export default function ProductsScreen() {
           onEndReachedThreshold={0.5}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <SymbolView name="tray.fill" size={48} tintColor="#CBD5E1" />
+              <SymbolView name="tray.fill" size={48} tintColor="#8e9a97" />
               <Text style={styles.emptyText}>No products found.</Text>
             </View>
           }
           ListFooterComponent={
-            isFetchingNextPage ? <ActivityIndicator style={{ margin: 16 }} color="#4F46E5" /> : null
+            isFetchingNextPage ? <ActivityIndicator style={{ margin: 16 }} color="#005c55" /> : null
           }
         />
       )}
@@ -107,25 +109,26 @@ export default function ProductsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  container: { flex: 1, backgroundColor: '#f7faf8' },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  errorText: { color: '#EF4444', fontSize: 16 },
-  searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFFFFF', margin: 16, paddingHorizontal: 16, borderRadius: 12, height: 48, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 2 },
-  searchInput: { flex: 1, marginLeft: 8, fontSize: 16, color: '#1E293B' },
+  errorText: { color: '#ba1a1a', fontSize: 16, fontWeight: '600' },
+  searchContainer: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFFFFF', margin: 16, paddingHorizontal: 16, borderRadius: 14, height: 50, shadowColor: '#0F172A', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.04, shadowRadius: 6, elevation: 2, borderWidth: 1, borderColor: '#bdc9c6' },
+  searchInput: { flex: 1, marginLeft: 8, fontSize: 16, color: '#181c1c' },
   listContent: { paddingHorizontal: 16, paddingBottom: 24, gap: 12 },
-  card: { backgroundColor: '#FFFFFF', borderRadius: 16, padding: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 1 },
-  cardHeader: { flexDirection: 'row', alignItems: 'flex-start' },
+  card: { backgroundColor: '#FFFFFF', borderRadius: 16, padding: 16, shadowColor: '#0F172A', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.04, shadowRadius: 6, elevation: 1, borderWidth: 1, borderColor: '#bdc9c6' },
+  cardHeader: { flexDirection: 'row', alignItems: 'center' },
+  iconBg: { width: 36, height: 36, borderRadius: 8, backgroundColor: '#005c5515', justifyContent: 'center', alignItems: 'center' },
   cardTitleContainer: { flex: 1, marginLeft: 12 },
-  cardTitle: { fontSize: 16, fontWeight: 'bold', color: '#1E293B' },
-  cardSubtitle: { fontSize: 14, color: '#64748B', marginTop: 2 },
+  cardTitle: { fontSize: 16, fontWeight: 'bold', color: '#181c1c' },
+  cardSubtitle: { fontSize: 13, color: '#4e6260', marginTop: 2 },
   statusBadge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 8 },
-  statusActive: { backgroundColor: '#D1FAE5' },
-  statusDraft: { backgroundColor: '#F1F5F9' },
+  statusActive: { backgroundColor: '#d1e7e4' },
+  statusDraft: { backgroundColor: '#f1f4f3' },
   statusText: { fontSize: 12, fontWeight: 'bold' },
-  statusTextActive: { color: '#059669' },
-  statusTextDraft: { color: '#475569' },
+  statusTextActive: { color: '#005c55' },
+  statusTextDraft: { color: '#4e6260' },
   cardBody: { marginTop: 12 },
-  cardDesc: { fontSize: 14, color: '#475569', lineHeight: 20 },
-  emptyContainer: { alignItems: 'center', marginTop: 64 },
-  emptyText: { marginTop: 16, fontSize: 16, color: '#94A3B8', fontWeight: '500' }
+  cardDesc: { fontSize: 14, color: '#4e6260', lineHeight: 20 },
+  emptyContainer: { alignItems: 'center', marginTop: 64, gap: 12 },
+  emptyText: { fontSize: 16, color: '#8e9a97', fontWeight: '500' }
 });

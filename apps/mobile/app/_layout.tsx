@@ -34,7 +34,7 @@ function useProtectedRoute() {
       if (user?.status === 'PENDING') {
         router.replace('/pending');
       } else {
-        router.replace('/(tabs)');
+        router.replace('/(tabs)/dashboard');
       }
     }
   }, [isAuthenticated, isLoading, segments, user]);

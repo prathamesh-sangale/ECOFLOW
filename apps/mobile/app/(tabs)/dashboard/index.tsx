@@ -37,7 +37,7 @@ export default function MobileDashboard() {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#4F46E5" />
+        <ActivityIndicator size="large" color="#005c55" />
       </View>
     );
   }
@@ -57,7 +57,9 @@ export default function MobileDashboard() {
       <Stack.Screen options={{ title: 'Overview' }} />
       
       <View style={styles.headerCard}>
-        <SymbolView name="chart.pie.fill" size={40} tintColor="#4F46E5" />
+        <View style={[styles.headerIconBg, { backgroundColor: '#005c5515' }]}>
+          <SymbolView name="chart.pie.fill" size={24} tintColor="#005c55" />
+        </View>
         <View style={styles.headerTextContainer}>
           <Text style={styles.headerTitle}>Welcome back,</Text>
           <Text style={styles.headerSubtitle}>{user?.full_name}</Text>
@@ -110,17 +112,18 @@ const MetricCard = ({ title, value, icon, color }: { title: string, value: numbe
 );
 
 const styles = StyleSheet.create({
-  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F8FAFC' },
-  errorText: { color: '#64748B', fontSize: 16 },
-  container: { flex: 1, backgroundColor: '#F8FAFC' },
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#f7faf8' },
+  errorText: { color: '#4e6260', fontSize: 16 },
+  container: { flex: 1, backgroundColor: '#f7faf8' },
   content: { padding: 16 },
-  headerCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFFFFF', padding: 20, borderRadius: 16, marginBottom: 24, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 8, elevation: 2 },
-  headerTextContainer: { marginLeft: 16 },
-  headerTitle: { fontSize: 14, color: '#64748B', fontWeight: '500' },
-  headerSubtitle: { fontSize: 22, fontWeight: 'bold', color: '#1E293B', marginTop: 2 },
-  sectionTitle: { fontSize: 18, fontWeight: '700', color: '#1E293B', marginBottom: 12 },
+  headerCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFFFFF', padding: 16, borderRadius: 16, marginBottom: 24, shadowColor: '#0F172A', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.04, shadowRadius: 8, elevation: 2 },
+  headerIconBg: { width: 48, height: 48, borderRadius: 12, justifyContent: 'center', alignItems: 'center' },
+  headerTextContainer: { marginLeft: 12 },
+  headerTitle: { fontSize: 13, color: '#4e6260', fontWeight: '500' },
+  headerSubtitle: { fontSize: 20, fontWeight: 'bold', color: '#181c1c', marginTop: 2 },
+  sectionTitle: { fontSize: 16, fontWeight: '700', color: '#181c1c', marginBottom: 12 },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12 },
-  metricCard: { width: '48%', backgroundColor: '#FFFFFF', padding: 16, borderRadius: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 1 },
-  metricValue: { fontSize: 24, fontWeight: 'bold', color: '#1E293B', marginTop: 12 },
-  metricTitle: { fontSize: 13, color: '#64748B', marginTop: 4, fontWeight: '500' },
+  metricCard: { width: '48%', backgroundColor: '#FFFFFF', padding: 16, borderRadius: 16, shadowColor: '#0F172A', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.04, shadowRadius: 6, elevation: 1 },
+  metricValue: { fontSize: 24, fontWeight: 'bold', color: '#181c1c', marginTop: 12 },
+  metricTitle: { fontSize: 13, color: '#4e6260', marginTop: 4, fontWeight: '500' },
 });

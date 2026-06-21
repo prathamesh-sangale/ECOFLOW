@@ -46,7 +46,7 @@ export default function TabLayout() {
         name="products"
         options={{
           title: 'Products',
-          href: ['Engineer'].includes(role) ? '/products' : null,
+          href: ['Engineer'].includes(role) ? '/(tabs)/products' : null,
           tabBarIcon: ({ color }) => (
             <SymbolView name={{ ios: 'square.stack.3d.up.fill', android: 'inventory_2', web: 'inventory_2' }} tintColor={color} size={28} />
           ),
@@ -56,7 +56,7 @@ export default function TabLayout() {
         name="boms"
         options={{
           title: 'BOMs',
-          href: ['Engineer'].includes(role) ? '/boms' : null,
+          href: ['Engineer'].includes(role) ? '/(tabs)/boms' : null,
           tabBarIcon: ({ color }) => (
             <SymbolView name={{ ios: 'list.bullet.rectangle.portrait.fill', android: 'account_tree', web: 'account_tree' }} tintColor={color} size={28} />
           ),
@@ -66,7 +66,7 @@ export default function TabLayout() {
         name="ecos"
         options={{
           title: 'ECOs',
-          href: ['Engineer'].includes(role) ? '/ecos' : null,
+          href: ['Engineer'].includes(role) ? '/(tabs)/ecos' : null,
           tabBarIcon: ({ color }) => (
             <SymbolView name={{ ios: 'arrow.triangle.2.circlepath.doc.on.clipboard', android: 'published_with_changes', web: 'published_with_changes' }} tintColor={color} size={28} />
           ),
@@ -76,7 +76,7 @@ export default function TabLayout() {
         name="approvals"
         options={{
           title: 'Approvals',
-          href: ['Approver'].includes(role) ? '/approvals' : null,
+          href: ['Approver'].includes(role) ? '/(tabs)/approvals' : null,
           tabBarIcon: ({ color }) => (
             <SymbolView name={{ ios: 'checkmark.seal.fill', android: 'verified', web: 'verified' }} tintColor={color} size={28} />
           ),
@@ -86,7 +86,7 @@ export default function TabLayout() {
         name="versions"
         options={{
           title: 'Releases',
-          href: ['Production Manager'].includes(role) ? '/versions' : null,
+          href: ['Production Manager'].includes(role) ? '/(tabs)/versions' : null,
           tabBarIcon: ({ color }) => (
             <SymbolView name={{ ios: 'archivebox', android: 'conveyor_belt', web: 'conveyor_belt' }} tintColor={color} size={28} />
           ),
@@ -96,7 +96,7 @@ export default function TabLayout() {
         name="admin"
         options={{
           title: 'Users',
-          href: ['Admin'].includes(role) ? '/admin' : null,
+          href: (['Admin'].includes(role) ? '/(tabs)/admin' : null) as any,
           tabBarIcon: ({ color }) => (
             <SymbolView name={{ ios: 'person.2.fill', android: 'group', web: 'group' }} tintColor={color} size={28} />
           ),
@@ -106,7 +106,7 @@ export default function TabLayout() {
         name="reports"
         options={{
           title: 'Reports',
-          href: ['Admin'].includes(role) ? '/reports' : null,
+          href: ['Admin'].includes(role) ? '/(tabs)/reports' : null,
           tabBarIcon: ({ color }) => (
             <SymbolView name={{ ios: 'doc.text.fill', android: 'assessment', web: 'assessment' }} tintColor={color} size={28} />
           ),
@@ -116,7 +116,7 @@ export default function TabLayout() {
         name="audit"
         options={{
           title: 'Audit',
-          href: ['Admin'].includes(role) ? '/audit' : null,
+          href: ['Admin'].includes(role) ? '/(tabs)/audit' : null,
           tabBarIcon: ({ color }) => (
             <SymbolView name={{ ios: 'shield.lefthalf.filled', android: 'security', web: 'security' }} tintColor={color} size={28} />
           ),
