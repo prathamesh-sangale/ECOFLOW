@@ -62,8 +62,7 @@ app.get('/', (req: Request, res: Response) => {
 // Health Checks
 app.get('/api/health', async (req: Request, res: Response) => {
   try {
-    const { PrismaClient } = require('@prisma/client');
-    const prisma = new PrismaClient();
+    const prisma = require('./utils/prisma').default;
     await prisma.$queryRaw`SELECT 1`;
     res.json({ status: 'ok', db: 'connected', timestamp: new Date().toISOString() });
   } catch (error) {

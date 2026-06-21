@@ -1,9 +1,10 @@
+import prisma from '../../utils/prisma';
 import { PrismaClient } from '@prisma/client';
 import { CreateUserInput, UpdateUserInput } from '@ecoflow/shared-validations';
 import bcrypt from 'bcryptjs';
 import { auditService } from '../audit/audit.service';
 
-const prisma = new PrismaClient();
+
 
 export class UsersService {
   static async getAllUsers() {

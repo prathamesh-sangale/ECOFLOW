@@ -1,8 +1,9 @@
+import prisma from '../../utils/prisma';
 import { PrismaClient } from '@prisma/client';
 import { CreateCategoryInput, UpdateCategoryInput } from '@ecoflow/shared-validations';
 import { auditService } from '../audit/audit.service';
 
-const prisma = new PrismaClient();
+
 
 export class CategoriesService {
   async getAllCategories() {

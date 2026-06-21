@@ -1,8 +1,9 @@
+import prisma from '../../utils/prisma';
 import { PrismaClient } from '@prisma/client';
 import { CreateRoleInput, UpdateRoleInput } from '@ecoflow/shared-validations';
 import { auditService } from '../audit/audit.service';
 
-const prisma = new PrismaClient();
+
 
 export class RolesService {
   static async getAllRoles() {

@@ -1,10 +1,11 @@
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { LoginSchema, AccessRequestSchema } from '@ecoflow/shared-validations';
+import prisma from '../../utils/prisma';
 import { PrismaClient } from '@prisma/client';
 import { AuthRequest } from './auth.middleware';
 
-const prisma = new PrismaClient();
+
 
 export class AuthController {
   static async login(req: Request, res: Response) {

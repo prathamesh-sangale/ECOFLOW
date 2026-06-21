@@ -1,3 +1,4 @@
+import prisma from '../../utils/prisma';
 import { PrismaClient } from '@prisma/client';
 import {
   EngineerDashboard,
@@ -6,7 +7,7 @@ import {
   AdminDashboard
 } from '@ecoflow/shared-types';
 
-const prisma = new PrismaClient();
+
 
 export class AnalyticsService {
   async getEngineerDashboard(userId: string): Promise<EngineerDashboard> {

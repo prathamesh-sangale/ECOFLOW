@@ -1,8 +1,9 @@
+import prisma from '../../utils/prisma';
 import { PrismaClient, Prisma } from '@prisma/client';
 import { ReportFilterInput } from '@ecoflow/shared-validations';
 import { Parser } from 'json2csv';
 
-const prisma = new PrismaClient();
+
 
 export class ReportsService {
   private buildDateFilter(startDate?: string, endDate?: string) {

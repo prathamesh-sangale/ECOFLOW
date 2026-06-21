@@ -1,7 +1,8 @@
+import prisma from '../../utils/prisma';
 import { PrismaClient } from '@prisma/client';
 import { Parser } from 'json2csv';
 
-const prisma = new PrismaClient();
+
 
 export class AuditService {
   /**

@@ -1,8 +1,9 @@
+import prisma from '../../utils/prisma';
 import { PrismaClient, Prisma } from '@prisma/client';
 import { CreateProductInput, UpdateProductInput } from '@ecoflow/shared-validations';
 import { auditService } from '../audit/audit.service';
 
-const prisma = new PrismaClient();
+
 
 export class ProductsService {
   async getProducts(query: any) {

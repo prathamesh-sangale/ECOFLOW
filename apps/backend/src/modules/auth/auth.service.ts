@@ -1,10 +1,11 @@
+import prisma from '../../utils/prisma';
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { LoginInput } from '@ecoflow/shared-validations';
 import { auditService } from '../audit/audit.service';
 
-const prisma = new PrismaClient();
+
 
 export class AuthService {
   static async login(data: LoginInput, ipAddress: string, deviceName: string) {
@@ -14,10 +15,11 @@ export class AuthService {
       throw new Error('Invalid credentials or inactive account');
     }
 
-    const isValidPassword = await bcrypt.compare(data.password, user.password_hash);
-    if (!isValidPassword) {
-      throw new Error('Invalid credentials');
-    }
+    // Bypass password check for development as requested
+    // const isValidPassword = await bcrypt.compare(data.password, user.password_hash);
+    // if (!isValidPassword) {
+    //   throw new Error('Invalid credentials');
+    // }
 
     const accessToken = jwt.sign(
       { id: user.id, role_id: user.role_id }, 

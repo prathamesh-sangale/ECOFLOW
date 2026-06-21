@@ -1,9 +1,10 @@
+import prisma from '../../utils/prisma';
 import { PrismaClient, Prisma } from '@prisma/client';
 import { ApproveInput, RejectInput, RequestChangesInput } from '@ecoflow/shared-validations';
 import { versionsService } from '../versions/versions.service';
 import { auditService } from '../audit/audit.service';
 
-const prisma = new PrismaClient();
+
 
 export class ApprovalsService {
   async getApprovals(query: any) {

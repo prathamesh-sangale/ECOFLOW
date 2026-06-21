@@ -1,8 +1,9 @@
+import prisma from '../../utils/prisma';
 import { PrismaClient } from '@prisma/client';
 import { uploadProductAttachment, deleteProductAttachment } from '../../utils/supabase';
 import { auditService } from '../audit/audit.service';
 
-const prisma = new PrismaClient();
+
 
 export class AttachmentsService {
   async addAttachment(productId: string, fileBuffer: Buffer, originalName: string, mimeType: string, userId: string) {

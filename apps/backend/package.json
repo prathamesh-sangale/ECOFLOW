@@ -10,6 +10,8 @@
     "lint": "eslint src/**/*.ts"
   },
   "dependencies": {
+    "@ecoflow/shared-validations": "*",
+    "@ecoflow/shared-types": "*",
     "@prisma/client": "^5.15.0",
     "@supabase/supabase-js": "^2.108.2",
     "@types/morgan": "^1.9.10",

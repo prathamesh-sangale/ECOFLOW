@@ -1,7 +1,8 @@
+import prisma from '../../utils/prisma';
 import { PrismaClient } from '@prisma/client';
 import { auditService } from '../audit/audit.service';
 
-const prisma = new PrismaClient();
+
 
 export class VersionsService {
   async generateVersion(ecoId: string, reviewerId: string) {

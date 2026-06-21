@@ -86,7 +86,7 @@ const Login = () => {
               <button 
                 onClick={async () => {
                   try {
-                    await login('engineer@ecoflow.com', 'Password123!');
+                    await login('engineer1@ecoflow.com', 'Password123!');
                     navigate('/dashboard');
                   } catch (e) {
                     alert('Login failed. Ensure backend is running and seeded.');
