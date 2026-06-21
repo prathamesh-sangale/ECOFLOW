@@ -1,0 +1,16 @@
+{
+  "name": "ECO Flow",
+  "short_name": "ECOFlow",
+  "description": "Engineering Change Order & Version Management System",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F8FAFC",
+  "theme_color": "#4F46E5",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

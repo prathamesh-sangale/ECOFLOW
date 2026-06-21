@@ -1,23 +1,43 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../store/AuthContext';
 
-export default function Sidebar() {
+interface SidebarProps {
+    isOpen?: boolean;
+    setIsOpen?: (isOpen: boolean) => void;
+}
+
+export default function Sidebar({ isOpen = false, setIsOpen }: SidebarProps) {
     const { user, logout } = useAuth();
     const location = useLocation();
 
     const isActive = (path: string) => location.pathname.startsWith(path);
 
     return (
-        <aside className="w-[260px] h-screen fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col py-base gap-2 z-50">
-            <div className="px-6 py-8 flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
-                    <span className="material-symbols-outlined">eco</span>
+        <>
+            {/* Backdrop overlay for mobile */}
+            {isOpen && (
+                <div 
+                    className="fixed inset-0 bg-scrim/50 backdrop-blur-sm z-40 md:hidden"
+                    onClick={() => setIsOpen && setIsOpen(false)}
+                />
+            )}
+            
+            <aside className={`w-[260px] h-screen fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col py-base gap-2 z-50 transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+                <div className="px-6 py-8 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+                            <span className="material-symbols-outlined">eco</span>
+                        </div>
+                        <div>
+                            <h1 className="font-headline-sm text-headline-sm font-bold text-primary">ECOFlow</h1>
+                            <p className="text-[10px] uppercase tracking-wider text-outline">Furniture Engineering</p>
+                        </div>
+                    </div>
+                    {/* Mobile close button */}
+                    <button onClick={() => setIsOpen && setIsOpen(false)} className="md:hidden text-secondary p-1">
+                        <span className="material-symbols-outlined">close</span>
+                    </button>
                 </div>
-                <div>
-                    <h1 className="font-headline-sm text-headline-sm font-bold text-primary">ECOFlow</h1>
-                    <p className="text-[10px] uppercase tracking-wider text-outline">Furniture Engineering</p>
-                </div>
-            </div>
             
             <nav className="flex-1 flex flex-col gap-1 px-3 sidebar-scroll overflow-y-auto">
                 <Link 
@@ -164,5 +184,6 @@ export default function Sidebar() {
                 </div>
             </div>
         </aside>
+    </>
     );
 }

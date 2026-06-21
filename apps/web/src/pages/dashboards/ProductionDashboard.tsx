@@ -26,7 +26,7 @@ export default function ProductionDashboard() {
   if (loading || !data) return <div className="p-8 text-center text-secondary">Loading Dashboard...</div>;
 
   return (
-    <div className="flex gap-xl">
+    <div className="flex flex-col lg:flex-row gap-xl">
       {/* Left Side: Main Stats & Table */}
       <div className="flex-1 flex flex-col gap-xl">
         {/* KPI Row */}

@@ -1,17 +1,25 @@
 import { Link, useLocation } from 'react-router-dom';
 
-export default function TopNav() {
+interface TopNavProps {
+    onMenuClick?: () => void;
+}
+
+export default function TopNav({ onMenuClick }: TopNavProps) {
     const location = useLocation();
 
     return (
-        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-outline-variant flex items-center justify-between h-16 px-margin-desktop">
-            <div className="flex items-center gap-8">
+        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-outline-variant flex items-center justify-between h-16 px-4 md:px-margin-desktop">
+            <div className="flex items-center gap-4 md:gap-8">
+                <button onClick={onMenuClick} className="md:hidden text-secondary hover:text-primary p-2">
+                    <span className="material-symbols-outlined">menu</span>
+                </button>
+                
                 <div className="relative hidden md:block">
                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-body-lg">search</span>
                     <input 
                         type="text" 
                         placeholder="Search components, ECOs, or BOMs..." 
-                        className="bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 w-80 text-body-md focus:ring-2 focus:ring-primary/20 transition-all focus:outline-none"
+                        className="bg-surface-container-low border-none rounded-full py-2 pl-10 pr-4 w-64 lg:w-80 text-body-md focus:ring-2 focus:ring-primary/20 transition-all focus:outline-none"
                     />
                 </div>
                 
