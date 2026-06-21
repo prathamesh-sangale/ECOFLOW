@@ -2,13 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { api } from '../../store/AuthContext';
 import type { CreateProductInput } from '@ecoflow/shared-validations';
 import type { ProductCategory } from '@ecoflow/shared-types';
+import { useQueryClient } from '@tanstack/react-query';
+import { useParams, useNavigate } from 'react-router-dom';
 
 interface ProductFormProps {
-  onClose: () => void;
-  onSuccess: () => void;
+  productId?: string | null;
+  onClose?: () => void;
+  onSuccess?: () => void;
 }
 
-export default function ProductForm({ onClose, onSuccess }: ProductFormProps) {
+export default function ProductForm({ productId, onClose, onSuccess }: ProductFormProps) {
+  const params = useParams();
+  const navigate = useNavigate();
+  const id = productId || params.id;
+  const queryClient = useQueryClient();
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [formData, setFormData] = useState<Partial<CreateProductInput>>({
     product_name: '',
@@ -20,13 +27,35 @@ export default function ProductForm({ onClose, onSuccess }: ProductFormProps) {
 
   useEffect(() => {
     api.get('/categories').then(res => setCategories(res.data));
-  }, []);
+    if (id) {
+      api.get(`/products/${id}`).then(res => {
+        const product = res.data;
+        setFormData({
+          product_name: product.product_name,
+          product_code: product.product_code,
+          category_id: product.category_id,
+          description: product.description || '',
+          status: product.status as any
+        });
+      });
+    }
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post('/products', formData);
-      onSuccess();
+      if (id) {
+        await api.put(`/products/${id}`, formData);
+      } else {
+        await api.post('/products', formData);
+      }
+      queryClient.invalidateQueries({ queryKey: ['dashboard', 'engineer'] });
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        navigate('/products');
+      }
     } catch (error) {
       console.error(error);
       alert('Failed to save product');
@@ -63,7 +92,7 @@ export default function ProductForm({ onClose, onSuccess }: ProductFormProps) {
             </select>
           </div>
           <div className="flex justify-end gap-md mt-lg">
-            <button type="button" onClick={onClose} className="px-4 py-2 text-secondary hover:bg-surface-container rounded">Cancel</button>
+            <button type="button" onClick={() => onClose ? onClose() : navigate(-1)} className="px-4 py-2 text-secondary hover:bg-surface-container rounded">Cancel</button>
             <button type="submit" className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-container">Save Product</button>
           </div>
         </form>

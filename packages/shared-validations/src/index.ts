@@ -173,7 +173,7 @@ export type CreateChangeInput = z.infer<typeof CreateChangeSchema>;
 export type CreateCommentInput = z.infer<typeof CreateCommentSchema>;
 
 export const ApproveSchema = z.object({
-  review_notes: z.string().min(1, 'Review notes are required for approval'),
+  review_notes: z.string().optional().default(''),
 });
 
 export const RejectSchema = z.object({

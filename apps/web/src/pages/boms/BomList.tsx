@@ -1,32 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth, api } from '../../store/AuthContext';
 import type { BOM } from '@ecoflow/shared-types';
 import BomForm from './BomForm';
+import { useQuery } from '@tanstack/react-query';
 
 export default function BomList() {
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const [boms, setBoms] = useState<BOM[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [total, setTotal] = useState(0);
   const [showForm, setShowForm] = useState(false);
+  const [editBomId, setEditBomId] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { data: bomData, isLoading: loading, refetch } = useQuery({
+    queryKey: ['boms'],
+    queryFn: async () => (await api.get('/boms')).data
+  });
 
-  const fetchData = async () => {
-    try {
-      const res = await api.get('/boms');
-      setBoms(res.data.boms);
-      setTotal(res.data.total);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const boms: any[] = bomData?.boms || [];
+  const total = bomData?.total || 0;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -104,8 +95,9 @@ export default function BomList() {
           </div>
       {showForm && (
         <BomForm 
-          onClose={() => setShowForm(false)} 
-          onSuccess={() => { setShowForm(false); fetchData(); }} 
+          bomId={editBomId}
+          onClose={() => { setShowForm(false); setEditBomId(null); }} 
+          onSuccess={() => { setShowForm(false); setEditBomId(null); refetch(); }} 
         />
       )}
     </div>

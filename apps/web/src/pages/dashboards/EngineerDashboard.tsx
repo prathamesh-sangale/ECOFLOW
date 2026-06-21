@@ -1,27 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import api from '../../services/api';
 import type { EngineerDashboard as IEngineerDashboard } from '@ecoflow/shared-types';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 
 export default function EngineerDashboard() {
-  const [data, setData] = useState<IEngineerDashboard | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchDashboard();
-  }, []);
-
-  const fetchDashboard = async () => {
-    try {
+  const { data, isLoading: loading } = useQuery<IEngineerDashboard>({
+    queryKey: ['dashboard', 'engineer'],
+    queryFn: async () => {
       const res = await api.get('/dashboard/engineer');
-      setData(res.data);
-    } catch (error) {
-      console.error('Failed to fetch engineer dashboard', error);
-    } finally {
-      setLoading(false);
+      return res.data;
     }
-  };
+  });
 
   if (loading || !data) return <div className="p-8 text-center text-secondary">Loading Dashboard...</div>;
 

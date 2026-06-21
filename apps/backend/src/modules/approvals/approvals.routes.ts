@@ -7,8 +7,8 @@ const router = Router();
 router.use(authenticate);
 
 // Approver/Admin endpoints
-router.get('/metrics', requireRole(['Approver', 'Admin', 'Production Manager']), approvalsController.getDashboardMetrics);
-router.get('/', requireRole(['Approver', 'Admin', 'Production Manager', 'Engineer']), approvalsController.getQueue);
+router.get('/metrics', requireRole(['Approver', 'Admin', 'Production Manager', 'Production']), approvalsController.getDashboardMetrics);
+router.get('/', requireRole(['Approver', 'Admin', 'Production Manager', 'Production']), approvalsController.getQueue);
 
 // Approval actions are strictly for Approvers and Admins
 router.post('/:ecoId/approve', requireRole(['Approver', 'Admin']), approvalsController.approve);

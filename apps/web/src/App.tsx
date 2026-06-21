@@ -1,6 +1,6 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthProvider, useAuth } from './store/AuthContext';
+import { AuthProvider } from './store/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import DashboardLayout from './components/DashboardLayout';
 import NotFound from './pages/errors/NotFound';
@@ -24,6 +24,7 @@ import ApprovalReview from './pages/approvals/ApprovalReview';
 import ReleaseTracking from './pages/versions/ReleaseTracking';
 import VersionHistory from './pages/versions/VersionHistory';
 import VersionComparison from './pages/versions/VersionComparison';
+import VersionList from './pages/versions/VersionList';
 import AuditDashboard from './pages/audit/AuditDashboard';
 
 const queryClient = new QueryClient();
@@ -53,28 +54,29 @@ function App() {
                 <Route path="/dashboard" element={<DashboardRouter />} />
                 <Route path="/dashboard/engineer" element={<ProtectedRoute allowedRoles={['Engineer', 'Admin']}><EngineerDashboard /></ProtectedRoute>} />
                 <Route path="/dashboard/approver" element={<ProtectedRoute allowedRoles={['Approver', 'Admin']}><ApproverDashboard /></ProtectedRoute>} />
-                <Route path="/dashboard/production" element={<ProtectedRoute allowedRoles={['Production Manager', 'Admin']}><ProductionDashboard /></ProtectedRoute>} />
+                <Route path="/dashboard/production" element={<ProtectedRoute allowedRoles={['Production Manager', 'Production', 'Admin']}><ProductionDashboard /></ProtectedRoute>} />
                 <Route path="/dashboard/admin" element={<ProtectedRoute allowedRoles={['Admin']}><AdminDashboard /></ProtectedRoute>} />
 
-                <Route path="/products" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer', 'Approver', 'Production Manager']}><ProductList /></ProtectedRoute>} />
+                <Route path="/products" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer', 'Approver', 'Production Manager', 'Production']}><ProductList /></ProtectedRoute>} />
                 <Route path="/products/new" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer']}><ProductForm /></ProtectedRoute>} />
                 <Route path="/products/:id/edit" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer']}><ProductForm /></ProtectedRoute>} />
 
-                <Route path="/boms" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer', 'Approver', 'Production Manager']}><BomList /></ProtectedRoute>} />
-                <Route path="/boms/:id" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer', 'Approver', 'Production Manager']}><BomDetails /></ProtectedRoute>} />
+                <Route path="/boms" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer', 'Approver', 'Production Manager', 'Production']}><BomList /></ProtectedRoute>} />
+                <Route path="/boms/:id" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer', 'Approver', 'Production Manager', 'Production']}><BomDetails /></ProtectedRoute>} />
 
-                <Route path="/ecos" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer', 'Approver', 'Production Manager']}><EcoList /></ProtectedRoute>} />
+                <Route path="/ecos" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer', 'Approver', 'Production Manager', 'Production']}><EcoList /></ProtectedRoute>} />
                 <Route path="/ecos/new" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer']}><EcoForm /></ProtectedRoute>} />
                 <Route path="/ecos/:id/edit" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer']}><EcoForm /></ProtectedRoute>} />
-                <Route path="/ecos/:id" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer', 'Approver', 'Production Manager']}><EcoDetails /></ProtectedRoute>} />
+                <Route path="/ecos/:id" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer', 'Approver', 'Production Manager', 'Production']}><EcoDetails /></ProtectedRoute>} />
 
-                <Route path="/approvals/dashboard" element={<ProtectedRoute allowedRoles={['Admin', 'Approver', 'Production Manager']}><ApprovalDashboard /></ProtectedRoute>} />
-                <Route path="/approvals/queue" element={<ProtectedRoute allowedRoles={['Admin', 'Approver', 'Production Manager', 'Engineer']}><ApprovalQueue /></ProtectedRoute>} />
-                <Route path="/approvals/review/:id" element={<ProtectedRoute allowedRoles={['Admin', 'Approver', 'Production Manager', 'Engineer']}><ApprovalReview /></ProtectedRoute>} />
+                <Route path="/approvals/dashboard" element={<ProtectedRoute allowedRoles={['Admin', 'Approver', 'Production Manager', 'Production']}><ApprovalDashboard /></ProtectedRoute>} />
+                <Route path="/approvals/queue" element={<ProtectedRoute allowedRoles={['Admin', 'Approver', 'Production Manager', 'Production', 'Engineer']}><ApprovalQueue /></ProtectedRoute>} />
+                <Route path="/approvals/review/:id" element={<ProtectedRoute allowedRoles={['Admin', 'Approver', 'Production Manager', 'Production', 'Engineer']}><ApprovalReview /></ProtectedRoute>} />
 
-                <Route path="/releases" element={<ProtectedRoute allowedRoles={['Admin', 'Production Manager']}><ReleaseTracking /></ProtectedRoute>} />
-                <Route path="/versions/product/:productId" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer', 'Approver', 'Production Manager']}><VersionHistory /></ProtectedRoute>} />
-                <Route path="/versions/compare/:oldVersionId/:newVersionId" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer', 'Approver', 'Production Manager']}><VersionComparison /></ProtectedRoute>} />
+                <Route path="/releases" element={<ProtectedRoute allowedRoles={['Admin', 'Approver', 'Production Manager', 'Production']}><ReleaseTracking /></ProtectedRoute>} />
+                <Route path="/versions" element={<ProtectedRoute allowedRoles={['Admin', 'Production Manager', 'Production']}><VersionList /></ProtectedRoute>} />
+                <Route path="/versions/product/:productId" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer', 'Approver', 'Production Manager', 'Production']}><VersionHistory /></ProtectedRoute>} />
+                <Route path="/versions/compare/:oldVersionId/:newVersionId" element={<ProtectedRoute allowedRoles={['Admin', 'Engineer', 'Approver', 'Production Manager', 'Production']}><VersionComparison /></ProtectedRoute>} />
 
                 <Route element={<ProtectedRoute allowedRoles={['Admin']} />}>
                   <Route path="/admin/users" element={<UserManagement />} />
@@ -82,7 +84,7 @@ function App() {
                   <Route path="/audit" element={<AuditDashboard />} />
                 </Route>
 
-                <Route path="/reports" element={<ProtectedRoute allowedRoles={['Admin', 'Approver', 'Production Manager', 'Engineer']}><ReportsCenter /></ProtectedRoute>} />
+                <Route path="/reports" element={<ProtectedRoute allowedRoles={['Admin', 'Approver', 'Production Manager', 'Production', 'Engineer']}><ReportsCenter /></ProtectedRoute>} />
               </Route>
             </Route>
 

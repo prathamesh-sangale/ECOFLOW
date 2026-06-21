@@ -16,7 +16,8 @@ export class ReportsController {
 
   async getApproverDashboard(req: Request, res: Response) {
     try {
-      const data = await analyticsService.getApproverDashboard((req as any).user.id);
+      const timeframe = req.query.timeframe as string;
+      const data = await analyticsService.getApproverDashboard((req as any).user.id, timeframe);
       res.json(data);
     } catch (error: any) {
       res.status(500).json({ error: error.message || 'Failed to fetch approver dashboard' });

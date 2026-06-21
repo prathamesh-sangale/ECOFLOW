@@ -18,6 +18,7 @@ export default function DashboardRouter() {
       return <Navigate to="/dashboard/admin" replace />;
     case 'Approver':
       return <Navigate to="/dashboard/approver" replace />;
+    case 'Production':
     case 'Production Manager':
       return <Navigate to="/dashboard/production" replace />;
     case 'Engineer':

@@ -7,14 +7,16 @@ import { Link } from 'react-router-dom';
 export default function ApproverDashboard() {
   const [data, setData] = useState<IApproverDashboard | null>(null);
   const [loading, setLoading] = useState(true);
+  const [timeframe, setTimeframe] = useState('this_month');
 
   useEffect(() => {
-    fetchDashboard();
-  }, []);
+    fetchDashboard(timeframe);
+  }, [timeframe]);
 
-  const fetchDashboard = async () => {
+  const fetchDashboard = async (tf: string) => {
+    setLoading(true);
     try {
-      const res = await api.get('/dashboard/approver');
+      const res = await api.get(`/dashboard/approver?timeframe=${tf}`);
       setData(res.data);
     } catch (error) {
       console.error('Failed to fetch approver dashboard', error);
@@ -22,34 +24,6 @@ export default function ApproverDashboard() {
       setLoading(false);
     }
   };
-
-  // Canvas drawing for sparklines
-  useEffect(() => {
-    if (loading || !data) return;
-    
-    function drawSparkline(canvasId: string, color: string, points: number[]) {
-      const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      const stepX = canvas.width / (points.length - 1);
-      points.forEach((p, i) => {
-        const x = i * stepX;
-        const y = canvas.height - (p * canvas.height);
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.stroke();
-    }
-
-    drawSparkline('sparkline-pending', '#005c55', [0.2, 0.4, 0.3, 0.6, 0.5, 0.8, 0.9]);
-    drawSparkline('sparkline-approved', '#006a63', [0.7, 0.8, 0.75, 0.85, 0.9, 0.95, 1.0]);
-    drawSparkline('sparkline-rejected', '#ba1a1a', [0.1, 0.2, 0.15, 0.05, 0.3, 0.1, 0.15]);
-  }, [loading, data]);
 
   if (loading || !data) return <div className="p-8 text-center text-secondary">Loading Dashboard...</div>;
 
@@ -60,17 +34,19 @@ export default function ApproverDashboard() {
         <div className="flex items-end justify-between mb-lg">
           <div>
             <h2 className="font-headline-lg text-headline-lg text-on-surface">Approvals Dashboard</h2>
-            <p className="text-body-lg text-secondary">Review and manage pending Engineering Change Orders for the current cycle.</p>
+            <p className="text-body-lg text-secondary">Review and manage pending Engineering Change Orders for the selected cycle.</p>
           </div>
           <div className="flex gap-sm">
-            <button className="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors">
-              <span className="material-symbols-outlined text-[18px]">calendar_today</span>
-              This Month
-            </button>
-            <button className="flex items-center gap-2 px-4 py-2 border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors">
-              <span className="material-symbols-outlined text-[18px]">filter_list</span>
-              Filter
-            </button>
+            <select 
+              value={timeframe} 
+              onChange={(e) => setTimeframe(e.target.value)}
+              className="px-4 py-2 border border-outline-variant rounded-lg font-label-md text-label-md bg-surface hover:bg-surface-container-low transition-colors outline-none cursor-pointer"
+            >
+              <option value="this_month">This Month</option>
+              <option value="last_month">Last Month</option>
+              <option value="this_year">This Year</option>
+              <option value="all_time">All Time</option>
+            </select>
           </div>
         </div>
 
@@ -81,9 +57,6 @@ export default function ApproverDashboard() {
             <div className="flex justify-between items-start">
               <div className="p-2 bg-primary/10 rounded-lg text-primary">
                 <span className="material-symbols-outlined">pending_actions</span>
-              </div>
-              <div className="w-16 h-8 opacity-40 group-hover:opacity-100 transition-opacity">
-                <canvas height="32" id="sparkline-pending" width="64"></canvas>
               </div>
             </div>
             <div className="mt-4">
@@ -96,22 +69,19 @@ export default function ApproverDashboard() {
             </div>
           </div>
 
-          {/* Approved This Month */}
+          {/* Approved */}
           <div className="bg-white/80 backdrop-blur-md border border-outline-variant p-lg rounded-xl flex flex-col justify-between group hover:shadow-lg transition-shadow">
             <div className="flex justify-between items-start">
               <div className="p-2 bg-surface-tint/10 rounded-lg text-surface-tint">
                 <span className="material-symbols-outlined">verified</span>
               </div>
-              <div className="w-16 h-8 opacity-40 group-hover:opacity-100 transition-opacity">
-                <canvas height="32" id="sparkline-approved" width="64"></canvas>
-              </div>
             </div>
             <div className="mt-4">
-              <p className="text-label-md font-label-md text-secondary uppercase tracking-wider">Approved This Month</p>
+              <p className="text-label-md font-label-md text-secondary uppercase tracking-wider">Approved Requests</p>
               <h3 className="font-headline-lg text-headline-lg text-on-surface mt-1">{data.approvalsThisMonth}</h3>
               <p className="text-body-sm text-on-secondary-container flex items-center gap-1 mt-2">
                 <span className="material-symbols-outlined text-[16px]">check_circle</span>
-                On track for target
+                Avg Time: {data.averageReviewTimeHours} hrs
               </p>
             </div>
           </div>
@@ -121,9 +91,6 @@ export default function ApproverDashboard() {
             <div className="flex justify-between items-start">
               <div className="p-2 bg-error/10 rounded-lg text-error">
                 <span className="material-symbols-outlined">cancel</span>
-              </div>
-              <div className="w-16 h-8 opacity-40 group-hover:opacity-100 transition-opacity">
-                <canvas height="32" id="sparkline-rejected" width="64"></canvas>
               </div>
             </div>
             <div className="mt-4">

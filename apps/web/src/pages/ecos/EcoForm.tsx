@@ -4,10 +4,12 @@ import { useAuth, api } from '../../store/AuthContext';
 import { ECOPrioritySchema } from '@ecoflow/shared-validations';
 import type { CreateECOInput } from '@ecoflow/shared-validations';
 import type { Product, BOM } from '@ecoflow/shared-types';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function EcoForm() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [boms, setBoms] = useState<BOM[]>([]);
@@ -48,9 +50,10 @@ export default function EcoForm() {
   const fetchBoms = async (productId: string) => {
     try {
       const res = await api.get(`/boms?product_id=${productId}`);
-      setBoms(res.data.boms);
+      setBoms(res.data.boms || res.data); // Handle both formats
     } catch (e) {
       console.error(e);
+      setBoms([]);
     }
   };
 
@@ -82,6 +85,7 @@ export default function EcoForm() {
       } else {
         await api.post('/ecos', formData);
       }
+      queryClient.invalidateQueries({ queryKey: ['dashboard', 'engineer'] });
       navigate('/ecos');
     } catch (error) {
       console.error(error);
@@ -119,14 +123,17 @@ export default function EcoForm() {
               <label className="block text-label-md font-medium text-on-surface-variant mb-1">BOM</label>
               <select
                 required
-                className="w-full bg-surface-container-low border-none rounded-lg p-3 text-body-md focus:ring-2 focus:ring-primary/20"
+                className="w-full bg-surface-container-low border-none rounded-lg p-3 text-body-md focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
                 value={formData.bom_id}
                 onChange={e => setFormData({ ...formData, bom_id: e.target.value })}
-                disabled={!formData.product_id}
+                disabled={!formData.product_id || boms.length === 0}
               >
                 <option value="">Select BOM...</option>
                 {boms.map(b => <option key={b.id} value={b.id}>{b.bom_code} - {b.bom_name}</option>)}
               </select>
+              {boms.length === 0 && formData.product_id && (
+                <p className="text-error text-sm mt-1">No BOM available for this product. Create a BOM first.</p>
+              )}
             </div>
           </div>
 

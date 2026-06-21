@@ -36,8 +36,8 @@ export default function ApprovalReview() {
   };
 
   const submitAction = async () => {
-    if (!reviewNotes.trim()) {
-      alert('Review notes are required.');
+    if ((actionType === 'Reject' || actionType === 'Request Changes') && !reviewNotes.trim()) {
+      alert('Review notes are required for this action.');
       return;
     }
     

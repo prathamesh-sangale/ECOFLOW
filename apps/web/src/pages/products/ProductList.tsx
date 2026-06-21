@@ -1,37 +1,29 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAuth, api } from '../../store/AuthContext';
 import type { Product, ProductCategory } from '@ecoflow/shared-types';
 import { NotificationPopover } from '../../components/NotificationPopover';
 import { GlobalSearch } from '../../components/GlobalSearch';
 import ProductForm from './ProductForm';
+import { useQuery } from '@tanstack/react-query';
 
 export default function ProductList() {
   const { logout } = useAuth();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<ProductCategory[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [total, setTotal] = useState(0);
   const [showForm, setShowForm] = useState(false);
+  const [editProductId, setEditProductId] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const { data: catData = [] } = useQuery<ProductCategory[]>({
+    queryKey: ['categories'],
+    queryFn: async () => (await api.get('/categories')).data
+  });
 
-  const fetchData = async () => {
-    try {
-      const [prodRes, catRes] = await Promise.all([
-        api.get('/products'),
-        api.get('/categories')
-      ]);
-      setProducts(prodRes.data.products);
-      setTotal(prodRes.data.total);
-      setCategories(catRes.data);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data: prodData, isLoading: loading, refetch } = useQuery({
+    queryKey: ['products'],
+    queryFn: async () => (await api.get('/products')).data
+  });
+
+  const products: Product[] = prodData?.products || [];
+  const total = prodData?.total || 0;
+  const categories = catData;
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -129,7 +121,10 @@ export default function ProductList() {
                         </td>
                         <td className="px-lg py-md text-right">
                           <div className="flex justify-end gap-2">
-                            <button className="p-2 hover:bg-secondary-container rounded-lg text-secondary hover:text-primary transition-all">
+                            <button 
+                              onClick={() => { setEditProductId(product.id); setShowForm(true); }}
+                              className="p-2 hover:bg-secondary-container rounded-lg text-secondary hover:text-primary transition-all"
+                            >
                               <span className="material-symbols-outlined text-sm">edit</span>
                             </button>
                             <button className="p-2 text-error hover:bg-error-container rounded-lg transition-colors"><span className="material-symbols-outlined text-sm">delete</span></button>
@@ -145,8 +140,9 @@ export default function ProductList() {
         </section>
       {showForm && (
         <ProductForm 
-          onClose={() => setShowForm(false)} 
-          onSuccess={() => { setShowForm(false); fetchData(); }} 
+          productId={editProductId}
+          onClose={() => { setShowForm(false); setEditProductId(null); }} 
+          onSuccess={() => { setShowForm(false); setEditProductId(null); refetch(); }} 
         />
       )}
     </div>

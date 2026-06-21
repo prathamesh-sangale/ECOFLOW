@@ -23,36 +23,6 @@ export default function ProductionDashboard() {
     }
   };
 
-  useEffect(() => {
-    if (loading || !data) return;
-
-    function drawSparkline(canvasId: string, color: string) {
-      const canvas = document.getElementById(canvasId) as HTMLCanvasElement;
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return;
-      const mockData = Array.from({length: 10}, () => Math.random() * 30);
-      
-      ctx.beginPath();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 2;
-      ctx.lineJoin = 'round';
-      
-      const step = canvas.width / (mockData.length - 1);
-      mockData.forEach((val, i) => {
-        const x = i * step;
-        const y = canvas.height - val;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.stroke();
-    }
-
-    drawSparkline('sparkline1', '#005c55');
-    drawSparkline('sparkline2', '#005c55');
-    drawSparkline('sparkline3', '#005c55');
-  }, [loading, data]);
-
   if (loading || !data) return <div className="p-8 text-center text-secondary">Loading Dashboard...</div>;
 
   return (
@@ -70,7 +40,6 @@ export default function ProductionDashboard() {
             </div>
             <div className="flex items-end justify-between">
               <h3 className="font-headline-lg text-headline-lg text-on-surface">{data.productsReleased}</h3>
-              <canvas className="w-16 h-8" id="sparkline1"></canvas>
             </div>
           </div>
           
@@ -83,7 +52,6 @@ export default function ProductionDashboard() {
             </div>
             <div className="flex items-end justify-between">
               <h3 className="font-headline-lg text-headline-lg text-on-surface">{data.activeVersions}</h3>
-              <canvas className="w-16 h-8" id="sparkline2"></canvas>
             </div>
           </div>
 
@@ -96,7 +64,6 @@ export default function ProductionDashboard() {
             </div>
             <div className="flex items-end justify-between">
               <h3 className="font-headline-lg text-headline-lg text-on-surface">{data.versionChanges}</h3>
-              <canvas className="w-16 h-8" id="sparkline3"></canvas>
             </div>
           </div>
 

@@ -52,10 +52,34 @@ export class AnalyticsService {
     };
   }
 
-  async getApproverDashboard(userId: string): Promise<ApproverDashboard> {
-    const startOfMonth = new Date();
-    startOfMonth.setDate(1);
-    startOfMonth.setHours(0, 0, 0, 0);
+  async getApproverDashboard(userId: string, timeframe: string = 'this_month'): Promise<any> {
+    const startDate = new Date();
+    
+    if (timeframe === 'this_month') {
+      startDate.setDate(1);
+      startDate.setHours(0, 0, 0, 0);
+    } else if (timeframe === 'last_month') {
+      startDate.setMonth(startDate.getMonth() - 1);
+      startDate.setDate(1);
+      startDate.setHours(0, 0, 0, 0);
+    } else if (timeframe === 'this_year') {
+      startDate.setMonth(0, 1);
+      startDate.setHours(0, 0, 0, 0);
+    } else {
+      // all_time
+      startDate.setFullYear(2000);
+    }
+
+    // Determine the end date for 'last_month' if needed
+    const endDate = new Date();
+    if (timeframe === 'last_month') {
+      endDate.setDate(0); // Last day of last month
+      endDate.setHours(23, 59, 59, 999);
+    }
+
+    const reviewedAtFilter = timeframe === 'last_month' 
+      ? { gte: startDate, lte: endDate } 
+      : { gte: startDate };
 
     const [
       pendingReviews,
@@ -63,11 +87,12 @@ export class AnalyticsService {
       rejectionsThisMonth,
       highPriorityRequests,
       approvalQueue,
-      recentReviews
+      recentReviews,
+      allReviewsInTimeframe
     ] = await Promise.all([
       prisma.eCO.count({ where: { status: { in: ['Submitted', 'Under Review'] } } }),
-      prisma.approval.count({ where: { reviewer_id: userId, decision: 'Approved', reviewed_at: { gte: startOfMonth } } }),
-      prisma.approval.count({ where: { reviewer_id: userId, decision: 'Rejected', reviewed_at: { gte: startOfMonth } } }),
+      prisma.approval.count({ where: { reviewer_id: userId, decision: 'Approved', reviewed_at: reviewedAtFilter } }),
+      prisma.approval.count({ where: { reviewer_id: userId, decision: 'Rejected', reviewed_at: reviewedAtFilter } }),
       prisma.eCO.count({ where: { status: { in: ['Submitted', 'Under Review'] }, priority: { in: ['High', 'Critical'] } } }),
       prisma.eCO.findMany({
         where: { status: { in: ['Submitted', 'Under Review'] } },
@@ -80,11 +105,28 @@ export class AnalyticsService {
         orderBy: { reviewed_at: 'desc' },
         take: 10,
         include: { eco: { select: { eco_number: true, title: true } } }
+      }),
+      prisma.approval.findMany({
+        where: { reviewer_id: userId, reviewed_at: reviewedAtFilter },
+        include: { eco: { select: { created_at: true } } }
       })
     ]);
 
-    // Calculate mock average review time since we don't track submission time explicitly yet
-    const averageReviewTimeHours = 24; 
+    // Calculate real average review time
+    let averageReviewTimeHours = 0;
+    if (allReviewsInTimeframe.length > 0) {
+      let totalMs = 0;
+      let validReviews = 0;
+      allReviewsInTimeframe.forEach(review => {
+        if (review.reviewed_at && review.eco?.created_at) {
+          totalMs += review.reviewed_at.getTime() - review.eco.created_at.getTime();
+          validReviews++;
+        }
+      });
+      if (validReviews > 0) {
+        averageReviewTimeHours = Math.round((totalMs / validReviews) / (1000 * 60 * 60)); // ms to hours
+      }
+    }
 
     return {
       pendingReviews,
@@ -114,7 +156,7 @@ export class AnalyticsService {
       prisma.productVersion.count({ where: { is_active: true } }),
       prisma.versionRelease.count({ where: { release_date: { gte: startOfMonth } } }),
       prisma.product.count({ where: { versions: { some: { is_active: true } } } }),
-      prisma.eCO.count({ where: { status: 'Approved' } }), // Mocking pending releases
+      prisma.eCO.count({ where: { status: 'Approved' } }),
       prisma.eCOChange.count({ where: { created_at: { gte: startOfMonth } } }),
       prisma.versionRelease.findMany({
         orderBy: { release_date: 'desc' },

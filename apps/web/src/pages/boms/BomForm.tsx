@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { api } from '../../store/AuthContext';
 import type { Product } from '@ecoflow/shared-types';
+import { useQueryClient } from '@tanstack/react-query';
+import { useParams } from 'react-router-dom';
 
 interface BomFormProps {
-  onClose: () => void;
-  onSuccess: () => void;
+  bomId?: string | null;
+  onClose?: () => void;
+  onSuccess?: () => void;
 }
 
-export default function BomForm({ onClose, onSuccess }: BomFormProps) {
+export default function BomForm({ bomId, onClose, onSuccess }: BomFormProps) {
+  const params = useParams();
+  const id = bomId || params.id;
+  const queryClient = useQueryClient();
   const [products, setProducts] = useState<Product[]>([]);
   const [formData, setFormData] = useState({
     product_id: '',
@@ -19,13 +25,31 @@ export default function BomForm({ onClose, onSuccess }: BomFormProps) {
 
   useEffect(() => {
     api.get('/products').then(res => setProducts(res.data.products));
-  }, []);
+    if (id) {
+      api.get(`/boms/${id}`).then(res => {
+        const bom = res.data;
+        setFormData({
+          product_id: bom.product_id,
+          bom_code: bom.bom_code,
+          bom_name: bom.bom_name,
+          description: bom.description || '',
+          status: bom.status as any
+        });
+      });
+    }
+  }, [id]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post('/boms', formData);
-      onSuccess();
+      if (id) {
+        await api.put(`/boms/${id}`, formData);
+      } else {
+        await api.post('/boms', formData);
+      }
+      queryClient.invalidateQueries({ queryKey: ['dashboard', 'engineer'] });
+      queryClient.invalidateQueries({ queryKey: ['boms'] });
+      if (onSuccess) onSuccess();
     } catch (error) {
       console.error(error);
       alert('Failed to save BOM');
@@ -62,7 +86,7 @@ export default function BomForm({ onClose, onSuccess }: BomFormProps) {
             </select>
           </div>
           <div className="flex justify-end gap-md mt-lg">
-            <button type="button" onClick={onClose} className="px-4 py-2 text-secondary hover:bg-surface-container rounded">Cancel</button>
+            <button type="button" onClick={() => onClose ? onClose() : window.history.back()} className="px-4 py-2 text-secondary hover:bg-surface-container rounded">Cancel</button>
             <button type="submit" className="px-4 py-2 bg-primary text-white rounded hover:bg-primary-container">Save BOM</button>
           </div>
         </form>
