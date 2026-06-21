@@ -77,7 +77,7 @@ export default function BomList() {
                         </td>
                         <td className="px-6 py-4 text-body-md">{bom.product?.product_name || 'Unknown'}</td>
                         <td className="px-6 py-4 text-body-md text-right font-mono">{bom.componentsCount}</td>
-                        <td className="px-6 py-4 text-body-md text-right font-mono">${(bom.totalCost || 0).toFixed(2)}</td>
+                        <td className="px-6 py-4 text-body-md text-right font-mono">₹{(bom.totalCost || 0).toFixed(2)}</td>
                         <td className="px-6 py-4 text-body-md">
                           <span className={`px-2 py-1 text-xs font-bold rounded-full ${getStatusColor(bom.status)}`}>{bom.status}</span>
                         </td>

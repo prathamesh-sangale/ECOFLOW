@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
 export default function EngineerDashboard() {
-  const { data, isLoading: loading } = useQuery<IEngineerDashboard>({
+  const { data, isLoading: loading, isError } = useQuery<IEngineerDashboard>({
     queryKey: ['dashboard', 'engineer'],
     queryFn: async () => {
       const res = await api.get('/dashboard/engineer');
@@ -14,7 +14,8 @@ export default function EngineerDashboard() {
     }
   });
 
-  if (loading || !data) return <div className="p-8 text-center text-secondary">Loading Dashboard...</div>;
+  if (loading) return <div className="p-8 text-center text-secondary">Loading Dashboard...</div>;
+  if (isError || !data) return <div className="p-8 text-center text-error">Failed to load dashboard. Please try refreshing.</div>;
 
   const totalEcos = data.draftEcos + data.pendingReviews + data.approvedEcos + data.rejectedEcos;
   const approvedPct = totalEcos === 0 ? 0 : (data.approvedEcos / totalEcos) * 100;

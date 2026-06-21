@@ -54,7 +54,7 @@ export default function BomDetails() {
         <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
             <h3 className="text-label-md text-on-surface-variant uppercase mb-2">Total Material Cost</h3>
-            <p className="text-headline-lg font-bold font-mono text-primary">${bom.costSummary.totalMaterialCost.toFixed(2)}</p>
+            <p className="text-headline-lg font-bold font-mono text-primary">₹{bom.costSummary.totalMaterialCost.toFixed(2)}</p>
           </div>
           <div className="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
             <h3 className="text-label-md text-on-surface-variant uppercase mb-2">Total Components</h3>
@@ -62,7 +62,7 @@ export default function BomDetails() {
           </div>
           <div className="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
             <h3 className="text-label-md text-on-surface-variant uppercase mb-2">Avg Component Cost</h3>
-            <p className="text-headline-lg font-bold font-mono text-secondary">${bom.costSummary.averageComponentCost.toFixed(2)}</p>
+            <p className="text-headline-lg font-bold font-mono text-secondary">₹{bom.costSummary.averageComponentCost.toFixed(2)}</p>
           </div>
         </section>
 
@@ -99,8 +99,8 @@ export default function BomDetails() {
                       <td className="px-6 py-4 text-on-surface-variant">{comp.material_type}</td>
                       <td className="px-6 py-4 text-right font-mono">{comp.quantity}</td>
                       <td className="px-6 py-4 text-on-surface-variant">{comp.unit}</td>
-                      <td className="px-6 py-4 text-right font-mono">${comp.unit_cost.toFixed(2)}</td>
-                      <td className="px-6 py-4 text-right font-semibold font-mono">${comp.total_cost.toFixed(2)}</td>
+                      <td className="px-6 py-4 text-right font-mono">₹{comp.unit_cost.toFixed(2)}</td>
+                      <td className="px-6 py-4 text-right font-semibold font-mono">₹{comp.total_cost.toFixed(2)}</td>
                     </tr>
                   ))
                 )}

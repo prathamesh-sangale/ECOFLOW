@@ -37,8 +37,9 @@ export const authenticate = async (req: AuthRequest, res: Response, next: NextFu
       status: user.status
     };
     next();
-  } catch (error) {
-    return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+  } catch (error: any) {
+    console.error('Auth middleware error:', error);
+    return res.status(401).json({ error: 'Unauthorized: Invalid token', details: error.message });
   }
 };
 

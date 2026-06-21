@@ -56,7 +56,7 @@ export default function ComponentForm({ bomId, onClose, onSuccess }: ComponentFo
             </div>
           </div>
           <div>
-            <label className="block text-label-md text-secondary mb-1">Unit Cost ($)</label>
+            <label className="block text-label-md text-secondary mb-1">Unit Cost (₹)</label>
             <input required type="number" step="0.01" min="0" className="w-full p-2 border rounded" value={formData.unit_cost} onChange={e => setFormData({ ...formData, unit_cost: parseFloat(e.target.value) })} />
           </div>
           <div>
