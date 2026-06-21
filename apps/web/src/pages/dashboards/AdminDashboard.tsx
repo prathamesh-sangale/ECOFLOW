@@ -14,12 +14,8 @@ export default function AdminDashboard() {
 
   const fetchDashboard = async () => {
     try {
-      if (localStorage.getItem('mockUser')) {
-        setData({ totalUsers: 24, activeUsers: 21, totalProducts: 142, totalBoms: 456, totalEcos: 89, totalApprovals: 67, totalVersions: 320, totalAuditEvents: 1205, recentAuditEvents: [] });
-      } else {
-        const res = await api.get('/dashboard/admin');
-        setData(res.data);
-      }
+      const res = await api.get('/dashboard/admin');
+      setData(res.data);
     } catch (error) {
       console.error('Failed to fetch admin dashboard', error);
     } finally {

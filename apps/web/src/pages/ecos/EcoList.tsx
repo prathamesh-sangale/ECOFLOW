@@ -49,36 +49,7 @@ export default function EcoList() {
   };
 
   return (
-    <div className="bg-background text-on-surface min-h-screen flex">
-      {/* Sidebar Placeholder */}
-      <aside className="w-[260px] h-screen fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col py-sm gap-2 z-50">
-        <div className="px-lg py-xl">
-          <h1 className="font-bold text-headline-sm text-primary tracking-tight">ECOFlow</h1>
-          <p className="text-label-md text-on-surface-variant opacity-70">Engineering Change Orders</p>
-        </div>
-        <nav className="flex-1 px-sm space-y-1">
-          <a className="flex items-center gap-3 px-4 py-2 text-secondary hover:bg-surface-container-low transition-colors" href="/products">
-            <span className="material-symbols-outlined">inventory_2</span>
-            <span className="font-body-md">Products</span>
-          </a>
-          <a className="flex items-center gap-3 px-4 py-2 text-secondary hover:bg-surface-container-low transition-colors" href="/boms">
-            <span className="material-symbols-outlined">account_tree</span>
-            <span className="font-body-md">BOMs</span>
-          </a>
-          <a className="flex items-center gap-3 px-4 py-2 bg-secondary-container text-primary font-semibold border-l-4 border-primary" href="/ecos">
-            <span className="material-symbols-outlined">published_with_changes</span>
-            <span className="font-body-md">ECOs</span>
-          </a>
-        </nav>
-        <div className="mt-auto border-t border-outline-variant p-md">
-          <button onClick={logout} className="flex items-center gap-3 w-full px-2 py-2 text-error hover:bg-error-container/20 rounded-lg">
-            <span className="material-symbols-outlined">logout</span>
-            <span className="font-body-md">Sign Out</span>
-          </button>
-        </div>
-      </aside>
-
-      <main className="ml-[260px] flex-1">
+    <div className="flex flex-col h-full">
         <header className="flex items-center justify-between h-16 px-8 sticky top-0 bg-background/80 backdrop-blur-md z-40 border-b border-outline-variant/30 shadow-sm">
           <div className="relative w-full max-w-md">
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
@@ -149,7 +120,6 @@ export default function EcoList() {
             </div>
           </div>
         </section>
-      </main>
     </div>
   );
 }

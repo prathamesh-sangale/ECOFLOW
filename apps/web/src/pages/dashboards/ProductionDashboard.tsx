@@ -14,12 +14,8 @@ export default function ProductionDashboard() {
 
   const fetchDashboard = async () => {
     try {
-      if (localStorage.getItem('mockUser')) {
-        setData({ activeVersions: 145, recentReleases: 8, productsReleased: 32, pendingReleases: 5, versionChanges: 18, releaseTimeline: [], activeProductVersions: [] });
-      } else {
-        const res = await api.get('/dashboard/production');
-        setData(res.data);
-      }
+      const res = await api.get('/dashboard/production');
+      setData(res.data);
     } catch (error) {
       console.error('Failed to fetch production dashboard', error);
     } finally {

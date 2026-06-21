@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth, api } from '../../store/AuthContext';
 import type { BOM, BOMComponent, CostSummary } from '@ecoflow/shared-types';
+import ComponentForm from './ComponentForm';
 
 export default function BomDetails() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [bom, setBom] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [showComponentForm, setShowComponentForm] = useState(false);
 
   useEffect(() => {
     fetchBom();
@@ -68,7 +70,10 @@ export default function BomDetails() {
         <section className="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden">
           <div className="px-6 py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-low/30">
             <h3 className="font-title-lg">Engineering Components List</h3>
-            <button className="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg text-label-md">
+            <button 
+              onClick={() => setShowComponentForm(true)}
+              className="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-lg text-label-md"
+            >
               <span className="material-symbols-outlined text-[18px]">add</span> Add Component
             </button>
           </div>
@@ -123,6 +128,14 @@ export default function BomDetails() {
           </div>
         </section>
       </main>
+
+      {showComponentForm && (
+        <ComponentForm
+          bomId={bom.id}
+          onClose={() => setShowComponentForm(false)}
+          onSuccess={() => { setShowComponentForm(false); fetchBom(); }}
+        />
+      )}
     </div>
   );
 }

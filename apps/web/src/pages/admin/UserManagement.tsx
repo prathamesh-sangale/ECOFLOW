@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useAuth, api } from '../../store/AuthContext';
 import type { User } from '@ecoflow/shared-types';
+import UserForm from './UserForm';
 
 export default function UserManagement() {
   const { user, logout } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -43,49 +45,10 @@ export default function UserManagement() {
   };
 
   return (
-    <div className="bg-background text-on-background font-body-md min-h-screen flex overflow-hidden">
-      {/* Sidebar Navigation */}
-      <aside className="fixed left-0 top-0 h-screen w-[260px] bg-surface-container-low flex flex-col py-xl px-md gap-sm z-50 border-r border-outline-variant">
-        <div className="flex items-center gap-md mb-xl px-sm">
-          <div className="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center text-on-primary-container">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>eco</span>
-          </div>
-          <div>
-            <h1 className="font-headline-lg text-headline-lg font-bold text-primary leading-none">ECOFlow</h1>
-            <p className="text-on-surface-variant font-label-md text-label-md">Engineering Control</p>
-          </div>
-        </div>
-        <nav className="flex-grow flex flex-col gap-xs">
-          <a className="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-secondary-fixed transition-all rounded-lg font-label-lg text-label-lg group" href="/dashboard">
-            <span className="material-symbols-outlined group-hover:text-primary">dashboard</span> Dashboard
-          </a>
-          <a className="bg-secondary-container text-on-secondary-container rounded-lg font-bold flex items-center gap-md px-md py-sm font-label-lg text-label-lg" href="/admin/users">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>group</span> User Management
-          </a>
-          <a className="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-secondary-fixed transition-all rounded-lg font-label-lg text-label-lg group" href="/admin/roles">
-            <span className="material-symbols-outlined group-hover:text-primary">admin_panel_settings</span> Role Management
-          </a>
-        </nav>
-        <div className="mt-auto border-t border-outline-variant pt-lg flex flex-col gap-xs">
-          <button onClick={logout} className="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-secondary-fixed transition-all rounded-lg font-label-lg text-label-lg group">
-            <span className="material-symbols-outlined">logout</span> Sign Out
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <main className="flex-grow ml-[260px] flex flex-col min-h-screen relative bg-background overflow-y-auto">
-        {/* Top Bar */}
-        <header className="h-16 flex items-center justify-between px-8 w-full sticky top-0 z-40 bg-surface shadow-sm border-b border-transparent">
-          <div className="flex items-center gap-lg">
-            <h2 className="font-headline-md text-headline-md text-on-surface font-bold">User Management</h2>
-          </div>
-          <div className="flex items-center gap-md">
-            <div className="flex items-center gap-sm">
-              <span className="font-label-lg text-label-lg text-on-surface font-semibold">{user?.full_name}</span>
-            </div>
-          </div>
-        </header>
+    <div className="flex flex-col h-full">
+      <header className="flex items-center justify-between mb-xl">
+        <h2 className="font-headline-lg text-on-surface">User Management</h2>
+      </header>
 
         {/* Content Body */}
         <div className="p-lg md:p-xl space-y-xl max-w-[1600px] mx-auto w-full">
@@ -94,7 +57,7 @@ export default function UserManagement() {
               {/* Filters */}
             </div>
             <div className="flex items-center gap-sm">
-              <button className="flex items-center gap-sm px-lg py-md bg-primary text-on-primary font-label-lg text-label-lg rounded-lg hover:opacity-90 transition-all shadow-md">
+              <button onClick={() => setShowForm(true)} className="flex items-center gap-sm px-lg py-md bg-primary text-on-primary font-label-lg text-label-lg rounded-lg hover:opacity-90 transition-all shadow-md">
                 <span className="material-symbols-outlined">person_add</span> Add User
               </button>
             </div>
@@ -156,7 +119,13 @@ export default function UserManagement() {
             </div>
           </div>
         </div>
-      </main>
+
+      {showForm && (
+        <UserForm 
+          onClose={() => setShowForm(false)} 
+          onSuccess={() => { setShowForm(false); fetchUsers(); }} 
+        />
+      )}
     </div>
   );
 }

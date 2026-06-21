@@ -3,6 +3,7 @@ import { useAuth, api } from '../../store/AuthContext';
 import type { Product, ProductCategory } from '@ecoflow/shared-types';
 import { NotificationPopover } from '../../components/NotificationPopover';
 import { GlobalSearch } from '../../components/GlobalSearch';
+import ProductForm from './ProductForm';
 
 export default function ProductList() {
   const { logout } = useAuth();
@@ -10,6 +11,7 @@ export default function ProductList() {
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -41,41 +43,17 @@ export default function ProductList() {
   };
 
   return (
-    <div className="bg-background text-on-background font-body-md min-h-screen">
-      {/* Side Navigation Bar */}
-      <aside className="w-[260px] h-screen fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col py-sm gap-2 z-50">
-        <div className="px-lg py-xl">
-          <h1 className="font-headline-sm text-headline-sm font-bold text-primary">ECOFlow</h1>
-          <p className="font-body-md text-body-md text-secondary">Furniture Engineering</p>
+    <div className="flex flex-col h-full">
+      <header className="flex items-center justify-between mb-xl">
+        <div className="flex items-center gap-xl flex-1">
+          <GlobalSearch />
         </div>
-        <nav className="flex-1 px-sm space-y-1 overflow-y-auto">
-          <a className="flex items-center gap-3 px-4 py-2 text-secondary hover:bg-surface-container-low transition-colors duration-200 font-body-md text-body-md" href="/dashboard">
-            <span className="material-symbols-outlined">dashboard</span>
-            <span>Dashboard</span>
-          </a>
-          <a className="flex items-center gap-3 px-4 py-2 bg-secondary-container text-primary font-semibold border-l-4 border-primary font-body-md text-body-md" href="/products">
-            <span className="material-symbols-outlined">inventory_2</span>
-            <span>Products</span>
-          </a>
-          {/* Other links omitted for brevity */}
-        </nav>
-        <div className="px-sm mt-auto border-t border-outline-variant pt-md">
-          <button onClick={logout} className="flex items-center w-full gap-3 px-4 py-3 text-error hover:bg-error-container/20 transition-colors rounded-lg">
-            <span className="material-symbols-outlined">logout</span>
-            <span className="font-body-md text-body-md">Sign Out</span>
-          </button>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <main className="ml-[260px] min-h-screen">
-        <header className="flex items-center justify-between h-16 px-8 sticky top-0 z-40 bg-background border-b border-outline-variant shadow-sm">
-          <div className="flex items-center gap-xl flex-1">
-            <GlobalSearch />
-          </div>
           <div className="flex items-center gap-md">
             <NotificationPopover />
-            <button className="bg-secondary-container text-primary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-primary hover:text-white transition-all">
+            <button 
+              onClick={() => setShowForm(true)}
+              className="bg-secondary-container text-primary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-primary hover:text-white transition-all"
+            >
               Add Product
             </button>
           </div>
@@ -150,9 +128,12 @@ export default function ProductList() {
                           <span className="text-body-md font-body-md text-on-surface">{new Date(product.updated_at).toLocaleDateString()}</span>
                         </td>
                         <td className="px-lg py-md text-right">
-                          <button className="p-2 hover:bg-secondary-container rounded-lg text-secondary hover:text-primary transition-all">
-                            <span className="material-symbols-outlined text-sm">edit</span>
-                          </button>
+                          <div className="flex justify-end gap-2">
+                            <button className="p-2 hover:bg-secondary-container rounded-lg text-secondary hover:text-primary transition-all">
+                              <span className="material-symbols-outlined text-sm">edit</span>
+                            </button>
+                            <button className="p-2 text-error hover:bg-error-container rounded-lg transition-colors"><span className="material-symbols-outlined text-sm">delete</span></button>
+                          </div>
                         </td>
                       </tr>
                     ))
@@ -162,7 +143,12 @@ export default function ProductList() {
             </div>
           </div>
         </section>
-      </main>
+      {showForm && (
+        <ProductForm 
+          onClose={() => setShowForm(false)} 
+          onSuccess={() => { setShowForm(false); fetchData(); }} 
+        />
+      )}
     </div>
   );
 }

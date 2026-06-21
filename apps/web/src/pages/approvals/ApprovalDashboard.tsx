@@ -29,45 +29,16 @@ export default function ApprovalDashboard() {
   };
 
   return (
-    <div className="bg-background text-on-surface min-h-screen flex">
-      {/* Sidebar */}
-      <aside className="w-[260px] h-screen fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col py-sm gap-2 z-50">
-        <div className="px-lg py-xl">
-          <h1 className="font-bold text-headline-sm text-primary tracking-tight">ECOFlow</h1>
-          <p className="text-label-md text-on-surface-variant opacity-70">Review & Approve</p>
+    <div className="flex flex-col h-full gap-8">
+      <header className="flex items-center justify-between mb-8">
+        <div>
+          <h2 className="font-headline-lg text-on-surface flex items-center gap-3">Approver Dashboard</h2>
+          <p className="text-body-md text-on-surface-variant mt-1">Overview of ECOs awaiting your review.</p>
         </div>
-        <nav className="flex-1 px-sm space-y-1">
-          <a className="flex items-center gap-3 px-4 py-2 bg-secondary-container text-primary font-semibold border-l-4 border-primary" href="/approvals/dashboard">
-            <span className="material-symbols-outlined">dashboard</span>
-            <span className="font-body-md">Dashboard</span>
-          </a>
-          <a className="flex items-center gap-3 px-4 py-2 text-secondary hover:bg-surface-container-low transition-colors" href="/approvals/queue">
-            <span className="material-symbols-outlined">rule_folder</span>
-            <span className="font-body-md">Approval Queue</span>
-          </a>
-        </nav>
-        <div className="mt-auto border-t border-outline-variant p-md">
-          <div className="px-4 py-3 bg-surface-container-lowest rounded-lg mb-4 border border-outline-variant/50">
-            <p className="text-body-sm font-bold text-on-surface">{user?.full_name}</p>
-            <p className="text-xs text-on-surface-variant">{user?.role_name}</p>
-          </div>
-          <button onClick={logout} className="flex items-center gap-3 w-full px-2 py-2 text-error hover:bg-error-container/20 rounded-lg">
-            <span className="material-symbols-outlined">logout</span>
-            <span className="font-body-md">Sign Out</span>
-          </button>
-        </div>
-      </aside>
-
-      <main className="ml-[260px] flex-1 p-8">
-        <header className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="font-headline-lg text-on-surface flex items-center gap-3">Approver Dashboard</h2>
-            <p className="text-body-md text-on-surface-variant mt-1">Overview of ECOs awaiting your review.</p>
-          </div>
-          <button onClick={() => navigate('/approvals/queue')} className="px-6 py-2 bg-primary text-on-primary font-bold rounded-lg hover:opacity-90 transition-opacity">
-            View All Pending
-          </button>
-        </header>
+        <button onClick={() => navigate('/approvals/queue')} className="px-6 py-2 bg-primary text-on-primary font-bold rounded-lg hover:opacity-90 transition-opacity">
+          View All Pending
+        </button>
+      </header>
 
         {loading ? (
           <div className="text-on-surface-variant">Loading dashboard...</div>
@@ -127,7 +98,6 @@ export default function ApprovalDashboard() {
             </div>
           </>
         )}
-      </main>
     </div>
   );
 }

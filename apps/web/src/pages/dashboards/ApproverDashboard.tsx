@@ -14,12 +14,8 @@ export default function ApproverDashboard() {
 
   const fetchDashboard = async () => {
     try {
-      if (localStorage.getItem('mockUser')) {
-        setData({ pendingReviews: 14, approvalsThisMonth: 128, rejectionsThisMonth: 12, averageReviewTimeHours: 4.5, highPriorityRequests: 3, approvalQueue: [], recentReviews: [] });
-      } else {
-        const res = await api.get('/dashboard/approver');
-        setData(res.data);
-      }
+      const res = await api.get('/dashboard/approver');
+      setData(res.data);
     } catch (error) {
       console.error('Failed to fetch approver dashboard', error);
     } finally {

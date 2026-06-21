@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth, api } from '../../store/AuthContext';
 import type { BOM } from '@ecoflow/shared-types';
+import BomForm from './BomForm';
 
 export default function BomList() {
   const { logout } = useAuth();
@@ -9,6 +10,7 @@ export default function BomList() {
   const [boms, setBoms] = useState<BOM[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -36,47 +38,16 @@ export default function BomList() {
   };
 
   return (
-    <div className="bg-background text-on-surface min-h-screen flex">
-      {/* Sidebar Placeholder */}
-      <aside className="w-[260px] h-screen fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col py-sm gap-2 z-50">
-        <div className="px-lg py-xl">
-          <h1 className="font-bold text-headline-sm text-primary tracking-tight">ECOFlow</h1>
-          <p className="text-label-md text-on-surface-variant opacity-70">Furniture Engineering</p>
+    <div className="flex flex-col h-full">
+      <header className="flex items-center justify-between mb-xl">
+        <h2 className="font-headline-lg text-on-surface">BOM Management</h2>
+        <button className="px-4 py-2 rounded-lg bg-primary text-on-primary font-label-md hover:opacity-90 shadow-sm transition-all" onClick={() => setShowForm(true)}>Create BOM</button>
+      </header>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-md mb-8">
+        <div>
+          <p className="text-body-md text-on-surface-variant mt-1">Manage Bills of Materials for your product catalog.</p>
         </div>
-        <nav className="flex-1 px-sm space-y-1">
-          <a className="flex items-center gap-3 px-4 py-2 text-secondary hover:bg-surface-container-low transition-colors" href="/products">
-            <span className="material-symbols-outlined">inventory_2</span>
-            <span className="font-body-md">Products</span>
-          </a>
-          <a className="flex items-center gap-3 px-4 py-2 bg-secondary-container text-primary font-semibold border-l-4 border-primary" href="/boms">
-            <span className="material-symbols-outlined">account_tree</span>
-            <span className="font-body-md">BOMs</span>
-          </a>
-        </nav>
-        <div className="mt-auto border-t border-outline-variant p-md">
-          <button onClick={logout} className="flex items-center gap-3 w-full px-2 py-2 text-error hover:bg-error-container/20 rounded-lg">
-            <span className="material-symbols-outlined">logout</span>
-            <span className="font-body-md">Sign Out</span>
-          </button>
-        </div>
-      </aside>
-
-      <main className="ml-[260px] flex-1">
-        <header className="flex items-center justify-between h-16 px-8 sticky top-0 bg-background/80 backdrop-blur-md z-40 border-b border-outline-variant/30 shadow-sm">
-          <div className="relative w-full max-w-md">
-            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
-            <input className="w-full bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-2 text-body-md focus:ring-2 focus:ring-primary/20" placeholder="Search Engineering Database..." type="text"/>
-          </div>
-          <button className="px-4 py-2 rounded-lg bg-primary text-on-primary font-label-md hover:opacity-90 shadow-sm transition-all" onClick={() => {/* Open Create Modal */}}>Create BOM</button>
-        </header>
-
-        <section className="px-8 py-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-md mb-8">
-            <div>
-              <h2 className="font-headline-lg text-on-surface flex items-center gap-3">BOM Management</h2>
-              <p className="text-body-md text-on-surface-variant mt-1">Manage Bills of Materials for your product catalog.</p>
-            </div>
-          </div>
+      </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div className="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant">
@@ -131,8 +102,12 @@ export default function BomList() {
               </table>
             </div>
           </div>
-        </section>
-      </main>
+      {showForm && (
+        <BomForm 
+          onClose={() => setShowForm(false)} 
+          onSuccess={() => { setShowForm(false); fetchData(); }} 
+        />
+      )}
     </div>
   );
 }

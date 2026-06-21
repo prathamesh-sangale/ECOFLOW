@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth, api } from '../../store/AuthContext';
 import type { Role, Permission } from '@ecoflow/shared-types';
+import RoleForm from './RoleForm';
 
 export default function RoleManagement() {
   const { logout } = useAuth();
   const [roles, setRoles] = useState<Role[]>([]);
   const [permissions, setPermissions] = useState<Permission[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -47,46 +49,14 @@ export default function RoleManagement() {
   }, {} as Record<string, Permission[]>);
 
   return (
-    <div className="bg-background text-on-surface font-body-md min-h-screen">
-      {/* SideNavBar */}
-      <aside className="fixed left-0 top-0 h-screen w-[260px] bg-surface-container-low flex flex-col py-xl px-md gap-sm z-50 border-r border-outline-variant">
-        <div className="flex items-center gap-sm mb-xl px-sm">
-          <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center text-on-primary">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>eco</span>
-          </div>
-          <div>
-            <h1 className="font-headline-lg text-headline-lg font-bold text-primary">ECOFlow</h1>
-            <p className="text-label-md font-label-md text-on-surface-variant">Engineering Control</p>
-          </div>
-        </div>
-        <nav className="flex-grow space-y-xs">
-          <a className="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-secondary-fixed transition-all rounded-lg font-label-lg text-label-lg" href="/dashboard">
-            <span className="material-symbols-outlined">dashboard</span> Dashboard
-          </a>
-          <a className="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-secondary-fixed transition-all rounded-lg font-label-lg text-label-lg" href="/admin/users">
-            <span className="material-symbols-outlined">group</span> User Management
-          </a>
-          <a className="bg-secondary-container text-on-secondary-container rounded-lg font-bold flex items-center gap-md px-md py-sm transition-all font-label-lg text-label-lg" href="/admin/roles">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>admin_panel_settings</span> Role Management
-          </a>
-        </nav>
-        <div className="mt-auto space-y-xs pt-lg">
-          <div className="pt-lg border-t border-outline-variant space-y-xs">
-            <button onClick={logout} className="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-secondary-fixed transition-all rounded-lg font-label-lg text-label-lg text-error">
-              <span className="material-symbols-outlined">logout</span> Sign Out
-            </button>
-          </div>
-        </div>
-      </aside>
-
-      <main className="ml-[260px] p-8 md:p-12">
+    <div className="flex flex-col h-full">
         {/* Header */}
         <header className="flex items-center justify-between mb-xl">
           <div className="space-y-xs">
             <h2 className="font-headline-lg text-headline-lg text-on-surface">Role & Permissions</h2>
             <p className="text-body-md text-on-surface-variant">Manage organization access levels and engineering control capabilities.</p>
           </div>
-          <button className="bg-primary text-on-primary px-lg py-md rounded-lg font-label-lg text-label-lg flex items-center gap-sm shadow-sm hover:opacity-90 transition-all">
+          <button onClick={() => setShowForm(true)} className="bg-primary text-on-primary px-lg py-md rounded-lg font-label-lg text-label-lg flex items-center gap-sm shadow-sm hover:opacity-90 transition-all">
             <span className="material-symbols-outlined">group_add</span>
             Create New Role
           </button>
@@ -157,7 +127,13 @@ export default function RoleManagement() {
             </table>
           </div>
         </section>
-      </main>
+
+      {showForm && (
+        <RoleForm 
+          onClose={() => setShowForm(false)} 
+          onSuccess={() => { setShowForm(false); fetchData(); }} 
+        />
+      )}
     </div>
   );
 }
