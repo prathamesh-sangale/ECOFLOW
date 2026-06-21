@@ -39,3 +39,21 @@ cd apps/backend
 npx prisma db push
 npx prisma generate
 ```
+
+## Workflow Rules & Roles
+ECOFlow uses a strict role-based access control (RBAC) system to manage the lifecycle of an Engineering Change Order (ECO).
+
+### 1. Engineer
+- **Role**: Creates and manages the initial draft of an ECO.
+- **Workflow**: When an Engineer creates an ECO, it starts in **"Draft"** status. *Draft ECOs are completely invisible to Approvers.* The Engineer must add at least one "Proposed Change" record to the ECO, and then explicitly click the **"Submit ECO"** button to send it to the Approvers.
+
+### 2. Approver
+- **Role**: Reviews and approves/rejects submitted ECOs.
+- **Workflow**: Approvers monitor their Dashboard for ECOs that have been **"Submitted"**. They can review the requested changes, add comments, and choose to Approve, Reject, or Request Changes. Approving an ECO automatically triggers the generation of a new Product/BOM Version.
+
+### 3. Production Manager / Production
+- **Role**: Monitors approved changes and manages releases.
+- **Workflow**: Only sees ECOs *after* they have been approved and new versions have been generated.
+
+### 4. Admin
+- **Role**: Has access to audit logs, user management, and system configuration.
