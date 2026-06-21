@@ -118,7 +118,7 @@ export default function Sidebar({ isOpen = false, setIsOpen }: SidebarProps) {
                             <span>{user?.role?.role_name === 'Production Manager' ? 'Releases' : 'History'}</span>
                         </Link>
 
-                        {user?.role?.role_name !== 'Production Manager' && (
+                        {user?.role?.role_name === 'Admin' && (
                             <>
                                 <div className="my-4 border-t border-outline-variant mx-4"></div>
                                 <Link 
@@ -162,7 +162,7 @@ export default function Sidebar({ isOpen = false, setIsOpen }: SidebarProps) {
                 )}
             </nav>
 
-            {(user?.role?.role_name !== 'Production Manager' && user?.role?.role_name !== 'Production') && (
+            {user?.role?.role_name === 'Engineer' && (
                 <div className="p-6 bg-surface-container-low mx-3 rounded-xl mb-4">
                     <Link to="/ecos/new" className="w-full bg-primary text-on-primary py-2.5 rounded-lg font-label-md flex items-center justify-center gap-2 active:scale-95 transition-transform hover:bg-primary-container">
                         <span className="material-symbols-outlined text-[18px]">add</span>

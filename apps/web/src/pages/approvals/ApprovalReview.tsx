@@ -77,7 +77,7 @@ export default function ApprovalReview() {
         </div>
         
         {/* Floating Action Bar */}
-        {(eco.status === 'Submitted' || eco.status === 'Under Review') && (user?.role_name === 'Approver' || user?.role_name === 'Admin') && (
+        {(eco.status === 'Submitted' || eco.status === 'Under Review' || eco.status === 'Pending') && (user?.role?.role_name === 'Approver' || user?.role?.role_name === 'Admin') && (
           <div className="flex gap-3">
             <button onClick={() => handleActionClick('Request Changes')} className="px-4 py-2 bg-surface-container text-on-surface font-bold rounded-lg border border-outline hover:bg-outline-variant">
               Request Changes

@@ -62,7 +62,7 @@ export default function EcoList() {
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline">search</span>
             <input className="w-full bg-surface-container-low border-none rounded-lg pl-10 pr-4 py-2 text-body-md focus:ring-2 focus:ring-primary/20" placeholder="Search ECOs..." type="text"/>
           </div>
-          {!isApprovedChangesView && (
+          {!isApprovedChangesView && user?.role?.role_name === 'Engineer' && (
             <button className="px-4 py-2 rounded-lg bg-primary text-on-primary font-label-md hover:opacity-90 shadow-sm transition-all" onClick={() => navigate('/ecos/new')}>Create ECO</button>
           )}
         </header>
