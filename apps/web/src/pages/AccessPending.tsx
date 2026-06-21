@@ -5,8 +5,11 @@ const AccessPending = () => {
   return (
     <main className="relative w-full max-w-4xl flex flex-col items-center mx-auto py-xl">
       {/* Top Branding Anchor */}
-      <div className="mb-xl text-center fade-in">
-        <h1 className="font-headline-md text-headline-md font-bold text-primary tracking-tight">ECOFlow</h1>
+      <div className="mb-xl text-center fade-in flex flex-col items-center">
+        <div className="flex items-center gap-sm">
+            <img src="/logo.png" alt="ECOFlow Logo" className="w-[48px] h-[48px] object-contain rounded-xl shadow-lg bg-primary/10" />
+            <h1 className="font-headline-md text-headline-md font-bold text-primary tracking-tight">ECOFlow</h1>
+        </div>
         <p className="font-label-md text-label-md text-outline uppercase tracking-widest mt-xs">Enterprise Management</p>
       </div>
 

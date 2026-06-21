@@ -25,9 +25,7 @@ export default function Sidebar({ isOpen = false, setIsOpen }: SidebarProps) {
             <aside className={`w-[260px] h-screen fixed left-0 top-0 bg-surface border-r border-outline-variant flex flex-col py-base gap-2 z-50 transition-transform duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
                 <div className="px-6 py-8 flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary">
-                            <span className="material-symbols-outlined">eco</span>
-                        </div>
+                        <img src="/logo.png" alt="ECOFlow Logo" className="w-10 h-10 object-contain rounded-lg shadow-sm bg-primary/10" />
                         <div>
                             <h1 className="font-headline-sm text-headline-sm font-bold text-primary">ECOFlow</h1>
                             <p className="text-[10px] uppercase tracking-wider text-outline">Furniture Engineering</p>

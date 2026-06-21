@@ -108,7 +108,7 @@ export function NotificationPopover() {
                       {n.type === 'success' ? 'check_circle' : n.type === 'warning' ? 'warning' : 'info'}
                     </span>
                   </div>
-                  <div className="flex-1">
+                  <div className={`flex-1 ${n.link ? 'cursor-pointer hover:underline' : ''}`} onClick={() => { if(n.link) { window.location.href = n.link; } }}>
                     <p className={`text-sm ${!n.read ? 'font-semibold text-slate-800' : 'font-medium text-slate-700'}`}>{n.title}</p>
                     <p className="text-xs text-slate-500 mt-1 line-clamp-2">{n.message}</p>
                     <p className="text-[10px] text-slate-400 mt-2">{format(new Date(n.created_at), 'MMM d, HH:mm')}</p>

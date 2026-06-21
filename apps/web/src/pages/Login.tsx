@@ -21,7 +21,7 @@ const Login = () => {
         {/* Content Overlay */}
         <div className="relative z-10 max-w-lg text-on-primary">
           <div className="flex items-center gap-sm mb-xl">
-            <span className="material-symbols-outlined text-[48px]" style={{ fontVariationSettings: "'FILL' 1" }}>eco</span>
+            <img src="/logo.png" alt="ECOFlow Logo" className="w-[48px] h-[48px] object-contain rounded-xl shadow-lg bg-white/20" />
             <h1 className="font-headline-lg text-headline-lg font-bold tracking-tight">ECOFlow</h1>
           </div>
           <h2 className="font-display-lg text-display-lg mb-md leading-tight">Mastering Precision in Furniture Engineering.</h2>
@@ -41,7 +41,7 @@ const Login = () => {
         <div className="max-w-md w-full mx-auto">
           {/* Mobile Branding (Hidden on Desktop) */}
           <div className="lg:hidden flex items-center gap-sm mb-xl">
-            <span className="material-symbols-outlined text-primary text-[32px]" style={{ fontVariationSettings: "'FILL' 1" }}>eco</span>
+            <img src="/logo.png" alt="ECOFlow Logo" className="w-[32px] h-[32px] object-contain rounded-lg shadow-sm bg-primary/10" />
             <h1 className="font-headline-md text-headline-md font-bold text-primary">ECOFlow</h1>
           </div>
 
