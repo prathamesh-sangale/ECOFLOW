@@ -1,4 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
+import { NotificationPopover } from './NotificationPopover';
 
 interface TopNavProps {
     onMenuClick?: () => void;
@@ -46,10 +47,8 @@ export default function TopNav({ onMenuClick }: TopNavProps) {
             </div>
 
             <div className="flex items-center gap-4">
-                <button className="text-secondary hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container-high relative">
-                    <span className="material-symbols-outlined">notifications</span>
-                    <span className="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-background"></span>
-                </button>
+                <NotificationPopover />
+
                 <button className="text-secondary hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container-high hidden sm:block">
                     <span className="material-symbols-outlined">help</span>
                 </button>

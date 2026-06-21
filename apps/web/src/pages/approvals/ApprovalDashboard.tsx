@@ -17,7 +17,7 @@ export default function ApprovalDashboard() {
     try {
       const [metricsRes, queueRes] = await Promise.all([
         api.get('/approvals/metrics'),
-        api.get('/approvals?limit=5&status=Under Review')
+        api.get('/approvals?limit=5')
       ]);
       setMetrics(metricsRes.data);
       setRecentApprovals(queueRes.data.ecos);
