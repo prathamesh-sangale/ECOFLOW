@@ -15,7 +15,8 @@
     "build:backend": "npm run build --workspace=apps/backend",
     "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "echo \"No root tests\" && exit 0"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
