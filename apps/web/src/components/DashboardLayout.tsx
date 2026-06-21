@@ -21,13 +21,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     {children || <Outlet />}
                 </div>
                 
-                {/* Floating Action Button (Global) */}
-                <button className="fixed bottom-8 right-8 bg-primary text-on-primary w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:scale-110 active:scale-90 transition-all z-50 group">
-                    <span className="material-symbols-outlined text-[28px]">add</span>
-                    <span className="absolute right-16 bg-inverse-surface text-inverse-on-surface px-4 py-2 rounded-lg text-label-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                        New Action
-                    </span>
-                </button>
+                {/* Floating Action Button removed as requested */}
             </main>
         </div>
     );

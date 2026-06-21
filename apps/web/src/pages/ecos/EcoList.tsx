@@ -4,7 +4,7 @@ import { useAuth, api } from '../../store/AuthContext';
 import type { ECO } from '@ecoflow/shared-types';
 
 export default function EcoList() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [ecos, setEcos] = useState<ECO[]>([]);
