@@ -174,8 +174,8 @@ export default function EngineerDashboard() {
                       <td className="px-6 py-4">{p.product_name}</td>
                       <td className="px-6 py-4">
                         <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold ${
-                          p.status === 'Released' ? 'bg-primary-container/10 text-primary-container' : 
-                          p.status === 'In Review' ? 'bg-secondary-container text-primary' : 
+                          (p.status as string) === 'Released' ? 'bg-primary-container/10 text-primary-container' : 
+                          (p.status as string) === 'In Review' ? 'bg-secondary-container text-primary' : 
                           'bg-surface-container-high text-outline'
                         }`}>
                           {p.status?.toUpperCase() || 'DRAFT'}
@@ -227,7 +227,7 @@ export default function EngineerDashboard() {
                   </div>
                   <p className="text-label-md font-bold text-on-surface">{a.action} Activity</p>
                   <p className="text-body-md text-on-surface-variant truncate">
-                    {(a.eco as any)?.eco_number || 'Unknown ECO'}
+                    {(a as any).eco?.eco_number || 'Unknown ECO'}
                   </p>
                   <p className="text-[11px] text-outline mt-1">{format(new Date(a.created_at!), 'MMM d, HH:mm')}</p>
                 </div>

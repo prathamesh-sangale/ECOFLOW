@@ -81,7 +81,7 @@ export default function EcoDetails() {
   if (loading) return <div className="p-8 text-on-surface">Loading...</div>;
   if (!eco) return null;
 
-  const canEdit = (eco.status === 'Draft') && (user?.role_name === 'Engineer' || user?.role_name === 'Admin');
+  const canEdit = (eco.status === 'Draft') && (user?.role?.role_name === 'Engineer' || user?.role?.role_name === 'Admin');
 
   return (
     <div className="bg-background text-on-surface min-h-screen">
