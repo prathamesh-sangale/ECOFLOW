@@ -3,6 +3,7 @@ import { PrismaClient, Prisma } from '@prisma/client';
 import { ApproveInput, RejectInput, RequestChangesInput } from '@ecoflow/shared-validations';
 import { versionsService } from '../versions/versions.service';
 import { auditService } from '../audit/audit.service';
+import { createNotification } from '../notifications/notifications.service';
 
 
 
@@ -114,6 +115,20 @@ export class ApprovalsService {
       new_value: { status: decision },
       performed_by: reviewerId
     });
+
+    // Notify the submitter
+    try {
+      const type = decision === 'Approved' ? 'success' : 'warning';
+      await createNotification({
+        user_id: eco.submitted_by,
+        title: `ECO ${decision}`,
+        message: `Your ECO-${eco.eco_number} was ${decision}.`,
+        link: `/ecos/${eco.id}`,
+        type
+      });
+    } catch (err) {
+      console.error('Failed to send notification for approval decision:', err);
+    }
 
     // Automatically generate versions if the decision was 'Approved'
     if (decision === 'Approved') {

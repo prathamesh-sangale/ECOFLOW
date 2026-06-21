@@ -24,6 +24,17 @@ export class UsersService {
     });
   }
 
+  static async getUsersByRoleNames(roleNames: string[]) {
+    return prisma.user.findMany({
+      where: {
+        role: {
+          role_name: { in: roleNames }
+        },
+        status: 'ACTIVE'
+      }
+    });
+  }
+
   static async createUser(data: CreateUserInput, performedBy: string) {
     const password_hash = await bcrypt.hash(data.password, 10);
     const newUser = await prisma.user.create({

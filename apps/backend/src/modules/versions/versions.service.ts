@@ -1,6 +1,8 @@
 import prisma from '../../utils/prisma';
 import { PrismaClient } from '@prisma/client';
 import { auditService } from '../audit/audit.service';
+import { UsersService } from '../users/users.service';
+import { createNotification } from '../notifications/notifications.service';
 
 
 
@@ -106,6 +108,27 @@ export class VersionsService {
       new_value: { productVersion: result.productVersion, bomVersion: result.bomVersion },
       performed_by: reviewerId
     });
+
+    // Notify users
+    try {
+      const targetRoles = ['Production Manager', 'Production', 'Admin'];
+      const usersToNotify = await UsersService.getUsersByRoleNames(targetRoles);
+      
+      const userIds = new Set(usersToNotify.map(u => u.id));
+      userIds.add(eco.submitted_by); // Also notify the Engineer
+
+      for (const uid of userIds) {
+        await createNotification({
+          user_id: uid,
+          title: 'New Product Version Released',
+          message: `Version ${result.productVersion.version_number} for ${product.product_name} has been released.`,
+          link: `/versions`,
+          type: 'success'
+        });
+      }
+    } catch (err) {
+      console.error('Failed to send notification for version generation:', err);
+    }
 
     return result;
   }

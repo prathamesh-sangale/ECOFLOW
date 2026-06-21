@@ -2,6 +2,8 @@ import prisma from '../../utils/prisma';
 import { PrismaClient, Prisma } from '@prisma/client';
 import { CreateECOInput, UpdateECOInput, CreateChangeInput, CreateCommentInput } from '@ecoflow/shared-validations';
 import { auditService } from '../audit/audit.service';
+import { UsersService } from '../users/users.service';
+import { createNotification } from '../notifications/notifications.service';
 
 
 
@@ -129,6 +131,22 @@ export class EcosService {
     if (status === 'Submitted') {
       if (existing.changes.length === 0) {
         throw new Error('ECO must have at least one change record before submitting.');
+      }
+      
+      // Notify Approvers and Admins
+      try {
+        const targetUsers = await UsersService.getUsersByRoleNames(['Approver', 'Admin']);
+        for (const user of targetUsers) {
+          await createNotification({
+            user_id: user.id,
+            title: 'New ECO Submitted',
+            message: `${existing.eco_number} has been submitted and is waiting for review.`,
+            link: `/approvals/review/${existing.id}`,
+            type: 'info'
+          });
+        }
+      } catch (err) {
+        console.error('Failed to send notifications:', err);
       }
     }
 
