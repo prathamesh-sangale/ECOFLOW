@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "scripts": {
+    "build": "echo 'No build required for shared-types'"
+  },
   "dependencies": {},
   "devDependencies": {
     "typescript": "^5.4.5"

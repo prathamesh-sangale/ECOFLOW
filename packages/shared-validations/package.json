@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "main": "src/index.ts",
   "types": "src/index.ts",
+  "scripts": {
+    "build": "echo 'No build required for shared-validations'"
+  },
   "dependencies": {
     "zod": "^3.22.4"
   },
