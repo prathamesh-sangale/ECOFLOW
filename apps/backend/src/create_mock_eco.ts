@@ -8,13 +8,15 @@ async function createMockECO(engineer: any, approver: any, token: string, produc
   const ecoNumber = `ECO-MOCK-BATCH-${Math.floor(Math.random() * 10000)}`;
 
   const titles = [
-    'Design Specification Update',
-    'Safety Compliance Adjustment'
+    '1',
+    '2',
+    '3'
   ];
   
   const descriptions = [
-    'Updating the dimensions of the core frame to improve structural integrity and reduce wobble.',
-    'Adjusting the finishing materials to comply with new international fire safety regulations.'
+    'Description for mock data 1',
+    'Description for mock data 2',
+    'Description for mock data 3'
   ];
 
   const eco = await prisma.eCO.create({
@@ -57,7 +59,7 @@ async function createMockECO(engineer: any, approver: any, token: string, produc
 }
 
 async function main() {
-  console.log('--- Generating 2 Mock Submitted ECOs ---');
+  console.log('--- Generating 3 Mock Submitted ECOs ---');
 
   const engineer = await prisma.user.findFirst({ where: { role: { role_name: 'Engineer' } } });
   const approver = await prisma.user.findFirst({ where: { role: { role_name: 'Approver' } } });
@@ -75,7 +77,7 @@ async function main() {
   
   if (!product || !bom) throw new Error('No Product/BOM');
 
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 3; i++) {
     await createMockECO(engineer, approver, token, product, bom, i);
     console.log('----------------------------------------------------');
   }
