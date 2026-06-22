@@ -10,7 +10,7 @@ import { createNotification } from '../notifications/notifications.service';
 export class EcosService {
   async getEcos(query: any) {
     const { page = 1, limit = 10, search, product_id, status, priority } = query;
-    
+
     const where: Prisma.ECOWhereInput = {};
     if (search) {
       where.OR = [
@@ -132,7 +132,7 @@ export class EcosService {
       if (existing.changes.length === 0) {
         throw new Error('ECO must have at least one change record before submitting.');
       }
-      
+
       // Notify Approvers and Admins
       try {
         const targetUsers = await UsersService.getUsersByRoleNames(['Approver', 'Admin']);
@@ -180,7 +180,7 @@ export class EcosService {
     const eco = await prisma.eCO.findUnique({ where: { id } });
     if (!eco) throw new Error('ECO not found');
     if (eco.status !== 'Draft') throw new Error('Can only delete Draft ECOs. Cancel them instead.');
-    
+
     await prisma.eCO.delete({ where: { id } });
 
     await auditService.log({

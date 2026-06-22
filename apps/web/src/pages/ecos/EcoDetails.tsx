@@ -9,11 +9,11 @@ export default function EcoDetails() {
   const { user } = useAuth();
   const [eco, setEco] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  
+
   // State for Add Change form
   const [showAddChange, setShowAddChange] = useState(false);
   const [changeForm, setChangeForm] = useState({ change_type: '', field_name: '', old_value: '', new_value: '', impact_type: 'Cost' });
-  
+
   // State for Comment
   const [commentText, setCommentText] = useState('');
 
@@ -123,7 +123,7 @@ export default function EcoDetails() {
               <h3 className="font-title-lg mb-4">Details</h3>
               <p className="text-body-md text-on-surface font-semibold">Description:</p>
               <p className="text-body-md text-on-surface-variant mb-4">{eco.description || 'N/A'}</p>
-              
+
               <p className="text-body-md text-on-surface font-semibold">Reason for Change:</p>
               <p className="text-body-md text-on-surface-variant">{eco.reason || 'N/A'}</p>
             </div>
@@ -142,11 +142,11 @@ export default function EcoDetails() {
               {showAddChange && (
                 <form onSubmit={handleAddChange} className="p-6 bg-surface-container-low/10 border-b border-outline-variant">
                   <div className="grid grid-cols-2 gap-4 mb-4">
-                    <input required type="text" placeholder="Change Type (e.g. Quantity Change)" className="p-2 border rounded" value={changeForm.change_type} onChange={e => setChangeForm({...changeForm, change_type: e.target.value})} />
-                    <input required type="text" placeholder="Field Name (e.g. Screws)" className="p-2 border rounded" value={changeForm.field_name} onChange={e => setChangeForm({...changeForm, field_name: e.target.value})} />
-                    <input type="text" placeholder="Old Value" className="p-2 border rounded" value={changeForm.old_value} onChange={e => setChangeForm({...changeForm, old_value: e.target.value})} />
-                    <input type="text" placeholder="New Value" className="p-2 border rounded" value={changeForm.new_value} onChange={e => setChangeForm({...changeForm, new_value: e.target.value})} />
-                    <select required className="p-2 border rounded" value={changeForm.impact_type} onChange={e => setChangeForm({...changeForm, impact_type: e.target.value})}>
+                    <input required type="text" placeholder="Change Type (e.g. Quantity Change)" className="p-2 border rounded" value={changeForm.change_type} onChange={e => setChangeForm({ ...changeForm, change_type: e.target.value })} />
+                    <input required type="text" placeholder="Field Name (e.g. Screws)" className="p-2 border rounded" value={changeForm.field_name} onChange={e => setChangeForm({ ...changeForm, field_name: e.target.value })} />
+                    <input type="text" placeholder="Old Value" className="p-2 border rounded" value={changeForm.old_value} onChange={e => setChangeForm({ ...changeForm, old_value: e.target.value })} />
+                    <input type="text" placeholder="New Value" className="p-2 border rounded" value={changeForm.new_value} onChange={e => setChangeForm({ ...changeForm, new_value: e.target.value })} />
+                    <select required className="p-2 border rounded" value={changeForm.impact_type} onChange={e => setChangeForm({ ...changeForm, impact_type: e.target.value })}>
                       <option value="Cost">Cost</option>
                       <option value="Material">Material</option>
                       <option value="Manufacturing">Manufacturing</option>
