@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { ecosService } from './modules/ecos/ecos.service';
 import { approvalsService } from './modules/approvals/approvals.service';
-import { notificationsService } from './modules/notifications/notifications.service';
+import * as notificationsService from './modules/notifications/notifications.service';
 
 const prisma = new PrismaClient();
 
@@ -64,8 +64,8 @@ async function main() {
 
   // 7. Check Notifications
   console.log('Checking Approver Notifications...');
-  const notifs = await notificationsService.getNotifications(approverUser.id, { limit: 10 });
-  const hasNotif = notifs.notifications.some(n => n.link?.includes(eco.id));
+  const notifs = await notificationsService.getNotifications(approverUser.id, 10);
+  const hasNotif = notifs.some((n: any) => n.link?.includes(eco.id));
   console.log('Did Approver get notification?', hasNotif);
 
   // Cleanup
